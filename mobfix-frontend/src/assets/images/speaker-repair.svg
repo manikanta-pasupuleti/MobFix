@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
+  <rect width="400" height="240" fill="#fff"/>
+  <rect x="120" y="60" width="40" height="120" rx="6" fill="#e6f7ff" stroke="#66b2ff" stroke-width="3"/>
+  <path d="M170 120c20-30 50-30 80 0" fill="none" stroke="#66b2ff" stroke-width="6" stroke-linecap="round"/>
+  <path d="M170 140c30-40 60-40 100 0" fill="none" stroke="#99d6ff" stroke-width="4" stroke-linecap="round"/>
+  <text x="200" y="200" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#0b66c3" text-anchor="middle">Speaker Repair</text>
+</svg>

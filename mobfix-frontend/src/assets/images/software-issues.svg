@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
+  <rect width="400" height="240" fill="#ffffff"/>
+  <rect x="60" y="40" width="280" height="160" rx="12" fill="#f0f8ff" stroke="#91d5ff" stroke-width="3"/>
+  <text x="200" y="120" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#096dd9" text-anchor="middle">Software Issues</text>
+  <text x="200" y="150" font-family="Courier New, monospace" font-size="14" fill="#096dd9" text-anchor="middle">OS / App / Boot</text>
+</svg>

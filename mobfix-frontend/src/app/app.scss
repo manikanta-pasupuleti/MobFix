@@ -1,0 +1,139 @@
+/* Core layout */
+.mobfix-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.75rem 1.25rem;
+	background: linear-gradient(90deg, #0d6efd 0%, #2b8fff 100%);
+	color: #fff;
+	box-shadow: 0 2px 8px rgba(13,110,253,0.12);
+}
+.mobfix-header .logo {
+	font-weight: 800;
+	color: #fff;
+	text-decoration: none;
+	font-size: 1.25rem;
+	display: inline-flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+.mobfix-header .logo .brand-mark {
+	width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.12); display:inline-block;
+}
+.mobfix-header .nav { list-style: none; display: flex; gap: 0.75rem; margin: 0; align-items: center; }
+.mobfix-header .nav a { color: rgba(255,255,255,0.95); text-decoration: none; padding: 0.35rem 0.6rem; border-radius: 6px; font-weight:600 }
+.mobfix-header .nav a:hover { background: rgba(255,255,255,0.08) }
+.mobfix-main { padding: 1.5rem; max-width: 1100px; margin: 0 auto; }
+
+/* Page header */
+.page-header { margin-bottom: 1rem; }
+.page-header h2 { margin: 0 0 0.75rem 0; font-size: 1.75rem; color: #222; }
+.empty { color: #666; margin: 1rem 0; }
+
+/* Services grid */
+.services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+.service-card {
+	border: 1px solid rgba(15,23,42,0.06);
+	border-radius: 12px;
+	padding: 0.75rem;
+	background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+	box-shadow: 0 4px 12px rgba(16,24,40,0.04);
+	display:flex; flex-direction:column;
+	transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.service-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(16,24,40,0.08) }
+.service-img { width:100%; height:140px; object-fit:cover; border-radius:8px; margin-bottom:0.75rem; background:#f6f8fb }
+.service-title { font-weight:700; margin-bottom:0.35rem; color:#0b5ed7; font-size:1.05rem }
+.service-desc { flex:1; color:#495057; margin-bottom:0.5rem }
+.service-meta { font-size:0.95rem; color:#212529; margin-bottom:0.75rem }
+.service-actions { text-align: right }
+.btn { border: none; padding: 0.5rem 0.75rem; border-radius: 8px; cursor: pointer; font-weight:600 }
+.btn.primary { background: linear-gradient(90deg,#0d6efd,#2b8fff); color: white }
+.btn.secondary { background: #f1f3f5; color: #222 }
+.btn:hover { opacity:0.95 }
+
+/* Ribbon and badges */
+.ribbon { position: absolute; margin: 0.6rem; background: linear-gradient(90deg,#ff7ab6,#ff4d6d); color:white; padding:0.25rem 0.6rem; border-radius:6px; font-weight:700; font-size:0.8rem }
+.service-card { position: relative }
+.price-badge { background:#fff; border-radius:6px; padding:0.15rem 0.5rem; font-weight:700; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-right:0.5rem }
+.service-tags { margin-top:0.5rem }
+.tag { display:inline-block; background:#f1f3f5; color:#444; padding:0.2rem 0.4rem; border-radius:6px; font-size:0.8rem; margin-right:0.35rem }
+.rating { color:#ffb84d; font-weight:700 }
+
+/* Booking status pill */
+.status-pill { display:inline-block; padding:0.25rem 0.6rem; border-radius:999px; font-weight:700; font-size:0.85rem }
+.status-pill.pending { background:#fff3cd; color:#856404 }
+.status-pill.confirmed { background:#d1e7dd; color:#0f5132 }
+.status-pill.cancelled { background:#f8d7da; color:#842029 }
+
+/* Card entrance animation + stagger */
+@keyframes cardIn {
+	0% { opacity: 0; transform: translateY(12px) scale(0.995); }
+	60% { opacity: 0.6; transform: translateY(6px) scale(0.998); }
+	100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.services-grid .service-card {
+	animation: cardIn 420ms cubic-bezier(0.2,0.9,0.2,1) both;
+}
+.services-grid .service-card:nth-child(1) { animation-delay: 40ms }
+.services-grid .service-card:nth-child(2) { animation-delay: 80ms }
+.services-grid .service-card:nth-child(3) { animation-delay: 120ms }
+.services-grid .service-card:nth-child(4) { animation-delay: 160ms }
+.services-grid .service-card:nth-child(5) { animation-delay: 200ms }
+.services-grid .service-card:nth-child(6) { animation-delay: 240ms }
+.services-grid .service-card:nth-child(7) { animation-delay: 280ms }
+.services-grid .service-card:nth-child(8) { animation-delay: 320ms }
+
+/* Micro-interactions */
+.service-card { transition: transform 180ms ease, box-shadow 180ms ease; }
+.service-card:hover .service-img { transform: scale(1.04); transition: transform 300ms ease; }
+.service-img { transition: transform 300ms ease, filter 220ms ease; }
+.service-card:hover .price-badge { transform: translateY(-4px); transition: transform 180ms ease; }
+.btn { transition: transform 140ms ease, box-shadow 140ms ease, opacity 160ms ease }
+.btn:active { transform: translateY(1px) scale(0.995) }
+.btn.primary:hover { box-shadow: 0 8px 20px rgba(13,110,253,0.16); transform: translateY(-2px) }
+.tag { transition: transform 160ms ease, background 160ms ease }
+.tag:hover { transform: translateY(-3px); background:#e9eefb }
+
+/* Subtle pulse for popular ribbon */
+.ribbon { position: absolute; will-change: transform; }
+.service-card:hover .ribbon { transform: translateY(-2px) scale(1.02); transition: transform 220ms ease }
+
+/* Reduce animation on prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+	.services-grid .service-card, .service-card, .service-img, .btn, .tag, .ribbon { animation: none !important; transition: none !important; transform: none !important }
+}
+
+/* Bookings list */
+.bookings-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.booking-card { display:flex; justify-content:space-between; gap:1rem; border:1px solid rgba(15,23,42,0.04); padding:0.85rem 1rem; border-radius:10px; background:#fff; align-items:center }
+.booking-left { display:flex; flex-direction:column }
+.booking-service { font-weight:700; color:#0b5ed7 }
+.booking-meta { color:#6c757d; font-size:0.95rem }
+.booking-status { font-weight:700; color:#0d6efd; align-self:center }
+
+/* Form styles inside service booking */
+input[type="text"], input[type="date"], input[type="time"], input[ngModel], textarea { border:1px solid #e9ecef; padding:0.5rem; border-radius:6px; width:100%; box-sizing:border-box }
+label { font-size: 0.9rem }
+
+/* Utilities */
+.muted { color:#6c757d }
+
+/* Small responsive tweak */
+@media (max-width:600px) { .service-img { height:160px } }
+
+/* Responsive tweaks */
+@media (max-width:600px) { .services-grid { grid-template-columns: 1fr } .mobfix-main { padding:1rem } }
+
+/* Home / Hero */
+.hero { padding: 2rem 0; display:flex; justify-content:center }
+.hero-inner { display:flex; gap:2rem; align-items:center; max-width:1100px; width:100% }
+.hero-copy { flex:1 }
+.hero-title { font-size:2rem; margin:0 0 0.5rem 0; color:#0d3b86 }
+.hero-subtitle { color:#495057; margin:0 0 1rem 0; line-height:1.45 }
+.hero-cta { margin-top:0.5rem }
+.hero-features { display:flex; gap:1rem; flex-direction:column; min-width:220px }
+.feature { background:#fff; border-radius:8px; padding:0.6rem 0.8rem; box-shadow:0 4px 12px rgba(16,24,40,0.04); font-weight:600 }
+
+@media (max-width:800px) { .hero-inner { flex-direction:column-reverse; align-items:flex-start } .hero-features { flex-direction:row; gap:0.5rem; width:100%; overflow:auto } .feature { flex:1; min-width:120px } }
+

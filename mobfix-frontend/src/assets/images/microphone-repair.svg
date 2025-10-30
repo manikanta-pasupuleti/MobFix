@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
+  <rect width="400" height="240" fill="#fffef6"/>
+  <rect x="170" y="60" width="60" height="100" rx="30" fill="#fff1cc" stroke="#ffd37f" stroke-width="3"/>
+  <rect x="160" y="160" width="80" height="8" rx="4" fill="#ffd37f"/>
+  <text x="200" y="200" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#b36b00" text-anchor="middle">Microphone Repair</text>
+</svg>

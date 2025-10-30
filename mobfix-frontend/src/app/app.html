@@ -1,0 +1,23 @@
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- Minimal app shell for MobFix -->
+<header class="mobfix-header">
+  <nav>
+    <a routerLink="/" class="logo">MobFix</a>
+    <ul class="nav">
+      <li><a routerLink="/services">Services</a></li>
+      <li><a routerLink="/login">Login</a></li>
+      <li><a routerLink="/register">Register</a></li>
+      <li><a routerLink="/my-bookings">My Bookings</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="mobfix-main">
+  <div class="page-header">
+    <h2>Welcome to MobFix</h2>
+  </div>
+  <router-outlet></router-outlet>
+</main>
+
+
+<router-outlet />
