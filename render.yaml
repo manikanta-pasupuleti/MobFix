@@ -1,0 +1,29 @@
+services:
+  - type: web_service
+    name: mobfix-backend
+    env: node
+    repo: https://github.com/manikanta-pasupuleti/MobFix.git
+    branch: main
+    plan: starter
+    buildCommand: cd backend && npm ci
+    startCommand: cd backend && npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: "5000"
+      - key: ADMIN_USERNAME
+        value: "admin"
+      - key: ADMIN_PASSWORD
+        value: "admin123"
+      - key: FRONTEND_URL
+        sync: false
+
+  - type: static_site
+    name: mobfix-frontend
+    repo: https://github.com/manikanta-pasupuleti/MobFix.git
+    branch: main
+    buildCommand: cd mobfix-frontend && npm ci && npx ng build --configuration production
+    publishPath: mobfix-frontend/dist/mobfix-frontend/browser
