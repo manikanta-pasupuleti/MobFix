@@ -24,7 +24,7 @@ services:
         sync: false
     healthCheckPath: /api/services
 
-  - type: static_site
+  - type: static
     name: mobfix-frontend
     repo: https://github.com/manikanta-pasupuleti/MobFix.git
     branch: main
