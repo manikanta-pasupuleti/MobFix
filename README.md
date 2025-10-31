@@ -72,55 +72,42 @@ node .\e2e\run.js
 - This repo has been initialized and pushed to the remote you provided.
 - If you'd like a GitHub Actions workflow to run frontend build/tests and backend lint/tests, I can add a minimal CI file.
 
-## Deploy to Render (quick guide)
+## Deploy to Render
 
-There's a `render.yaml` at the repo root that declares two services: `mobfix-backend` (Web Service) and `mobfix-frontend` (Static Site). The `render.yaml` leaves your sensitive values (Mongo URI and JWT secret) un-synced so you must set them in the Render dashboard.
+📘 **[Complete Step-by-Step Deployment Guide → RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)**
 
-Steps to deploy on Render
+This repository includes a `render.yaml` that configures both backend (Web Service) and frontend (Static Site) for automatic deployment.
 
-1. Sign in to https://dashboard.render.com and connect your GitHub account.
-2. Import this repository (MobFix) into Render.
-3. When Render reads `render.yaml` it will propose creating two services. Review them and create the services.
-4. Set the required environment variables for the backend service (Render → your service → Environment):
+### Quick Start
 
-	 - MONGO_URI = your MongoDB connection string (use MongoDB Atlas for production; DO NOT use `mongodb://localhost:27017` on Render)
-	 - JWT_SECRET = a secure random string (use Render's secret generator)
-	 - PORT = 5000 (optional; Render will assign a port if you omit this)
-	 - ADMIN_USERNAME = admin (or your chosen admin username)
-	 - ADMIN_PASSWORD = admin123 (or your chosen admin password)
-	 - FRONTEND_URL = https://your-frontend-domain (optional — helpful for CORS or link generation)
+1. **Set up MongoDB Atlas** (free tier) - get your connection string
+2. **Connect GitHub to Render** - import this repository
+3. **Deploy via Blueprint** - Render reads `render.yaml` and creates both services
+4. **Set environment variables** in Render dashboard:
+   - Backend: `MONGO_URI`, `JWT_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`
+   - Frontend: `API_URL` (your backend URL + `/api`)
+5. **Seed the database** - run `node scripts/seedServices.js` in Render Shell
+6. **Test your app** - frontend should show services from backend
 
-Notes about `MONGO_URI` and `.env`
+For detailed instructions with screenshots and troubleshooting, see **[RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)**.
 
-- Your local `backend/.env` currently contains `MONGO_URI=mongodb://localhost:27017/mobfix` (good for local dev). For Render, use an Atlas connection string (mongodb+srv://...) and set it as the `MONGO_URI` environment variable in Render.
-- Do not commit production secrets to git. The repo `.gitignore` already ignores `.env`.
+### Required Environment Variables
 
-Seeding the database
+**Backend (`mobfix-backend`):**
+- `MONGO_URI` - MongoDB Atlas connection string (mongodb+srv://...)
+- `JWT_SECRET` - Random 64-character string (use Render's generator)
+- `ADMIN_USERNAME` - Admin user (default: "admin")
+- `ADMIN_PASSWORD` - Admin password (change from default!)
+- `FRONTEND_URL` - Your frontend URL (set after frontend deploys)
 
-- The repo includes simple seed scripts under `backend/scripts/` (for example `seedAdmin.js` and `promoteToAdmin.js`). After your backend is deployed and has a working `MONGO_URI`, either:
+**Frontend (`mobfix-frontend`):**
+- `API_URL` - Your backend URL + `/api` (e.g., https://mobfix-backend.onrender.com/api)
 
-	- Run the seed script locally (targeting your production Atlas URI):
+### Security Notes
 
-		```powershell
-		Set-Location .\backend
-		# ensure NODE_ENV or env vars point to your Atlas DB
-		node scripts/seedAdmin.js
-		```
-
-	- Or use Render's Dashboard Console for your backend service to run the script once:
-		- Open the backend service in Render → Shell/Console → run `node scripts/seedAdmin.js`.
-
-CORS and FRONTEND_URL
-
-- If the backend enforces CORS, set `FRONTEND_URL` to your frontend site (Render will give you the site URL after deployment) and update the backend CORS config to allow that origin.
-
-Troubleshooting
-
-- Build failures: check render logs. Ensure Node version compatibility and that `publishPath` in `render.yaml` matches the Angular build output configured in `mobfix-frontend/angular.json`.
-- Backend errors: ensure `MONGO_URI` and `JWT_SECRET` are set correctly in the Render environment.
-- Still seeing local DB URL: double-check you set the env var in the Render dashboard and that the deployed service restarted after you set it.
-
-If you'd like, I can update this README with a one-click checklist tailored to your Render account (or commit `render.yaml` updates for a different branch). Let me know and I'll commit that change.
+⚠️ Never commit secrets to git (`.env` is in `.gitignore`)  
+⚠️ Rotate any credentials shared in logs/chat  
+⚠️ Change default admin password before production use
 
 ## Contributing
 - Open issues and PRs are welcome. Small enhancements to the README or adding seed data to the backend are good next steps.
