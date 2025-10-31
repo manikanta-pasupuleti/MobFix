@@ -10,24 +10,35 @@ import { BookingsService } from './bookings.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="page-header"><h2>Services</h2></div>
-    <div *ngIf="!services?.length" class="empty">No services found.</div>
+    <div class="page-header">
+      <h2>Our Services</h2>
+      <div class="category-filter">
+        <button class="filter-btn" [class.active]="selectedCategory === 'All'" (click)="filterByCategory('All')">All</button>
+        <button class="filter-btn" [class.active]="selectedCategory === cat" *ngFor="let cat of categories" (click)="filterByCategory(cat)">{{cat}}</button>
+      </div>
+    </div>
+    <div *ngIf="!filteredServices?.length" class="empty">No services found.</div>
     <div class="services-grid">
-      <div class="service-card" *ngFor="let s of services">
+      <div class="service-card" *ngFor="let s of filteredServices">
         <div *ngIf="isPopular(s)" class="ribbon">Popular</div>
         <img class="service-img" [src]="imageFor(s)" [alt]="s.serviceName" />
+        <div class="category-badge">{{s.category || 'Other'}}</div>
         <div class="service-title">{{ s.serviceName }}</div>
         <div class="service-desc">{{ s.description }}</div>
         <div class="service-meta">
           <span class="price-badge">&#36;{{ s.price }}</span>
-          <span class="muted"> • {{ s.durationMins || '—' }} mins</span>
-          <span class="muted"> • <span class="rating">{{ stars(s.rating) }}</span> {{ s.rating ? ('(' + s.rating + ')') : '' }}</span>
+          <span class="muted"> • {{ s.estimatedTime || s.durationMins + ' mins' || '—' }}</span>
         </div>
-        <div class="service-tags">
-          <span class="tag" *ngFor="let t of s.tags || []">{{t}}</span>
+        <div class="rating-row">
+          <span class="rating">{{ stars(s.rating || 0) }}</span>
+          <span class="muted" *ngIf="s.rating"> {{ s.rating.toFixed(1) }}</span>
+          <span class="muted" *ngIf="s.reviewCount"> ({{ s.reviewCount }} reviews)</span>
+        </div>
+        <div class="service-tags" *ngIf="s.warranty">
+          <span class="tag">🛡️ {{ s.warranty }} warranty</span>
         </div>
         <div class="service-actions">
-          <button class="btn primary" (click)="openForm(s)">Book</button>
+          <button class="btn primary" (click)="openForm(s)">Book Now</button>
         </div>
         <div *ngIf="openFor === s._id" style="margin-top:0.75rem">
           <div>
@@ -51,6 +62,9 @@ import { BookingsService } from './bookings.service';
 })
 export class ServicesComponent implements OnInit {
   services: any[] = [];
+  filteredServices: any[] = [];
+  categories: string[] = ['Screen', 'Battery', 'Camera', 'Charging', 'Audio', 'Software', 'Other'];
+  selectedCategory: string = 'All';
   openFor: string | null = null;
   form: any = { mobileModel: '', issueDescription: '', date: '', time: '' };
   constructor(private svc: ServicesService, private bs: BookingsService, private router: Router) {}
@@ -58,8 +72,18 @@ export class ServicesComponent implements OnInit {
   ngOnInit() {
     this.svc.list().subscribe({ next: (res: any) => {
         this.services = (res && res.length) ? res : this.sampleServices();
+        this.filteredServices = this.services;
       }
     });
+  }
+
+  filterByCategory(category: string) {
+    this.selectedCategory = category;
+    if (category === 'All') {
+      this.filteredServices = this.services;
+    } else {
+      this.filteredServices = this.services.filter(s => s.category === category);
+    }
   }
 
   openForm(s: any) {
@@ -139,6 +163,6 @@ export class ServicesComponent implements OnInit {
   }
 
   isPopular(s: any) {
-    return s.popular || (s.rating && s.rating >= 4.5);
+    return s.isPopular || s.popular || (s.rating && s.rating >= 4.7);
   }
 }
