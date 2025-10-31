@@ -81,15 +81,22 @@ async function seed() {
   try {
     const created = [];
     for (const s of sampleServices) {
-      const exists = await Service.findOne({ title: s.title }).exec();
+      const serviceName = s.title || s.serviceName;
+      const exists = await Service.findOne({ serviceName }).exec();
       if (exists) {
-        console.log('Already exists:', s.title);
+        console.log('Already exists:', serviceName);
         continue;
       }
-      const doc = new Service(s);
+      // Map to backend Service schema
+      const payload = {
+        serviceName,
+        description: s.description || '',
+        price: s.price || 0,
+      };
+      const doc = new Service(payload);
       await doc.save();
-      created.push(s.title);
-      console.log('Inserted:', s.title);
+      created.push(serviceName);
+      console.log('Inserted:', serviceName);
     }
     console.log('Done. Inserted:', created.length);
   } catch (err) {

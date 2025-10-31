@@ -6,7 +6,12 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  apiUrl = 'http://localhost:5000/api';
+  // Use runtime-configurable API base; defaults to localhost in dev and relative /api in production
+  private apiBase = ((window as any).__env && (window as any).__env.API_URL)
+    ? (window as any).__env.API_URL
+    : (/localhost|127\.0\.0\.1|::1/.test(window.location.hostname) ? 'http://localhost:5000/api' : '/api');
+
+  apiUrl = this.apiBase;
 
   get token(): string | null {
     return localStorage.getItem('mf_token');
