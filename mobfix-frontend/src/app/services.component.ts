@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ServicesService } from './services.service';
 import { BookingsService } from './bookings.service';
 
 @Component({
   selector: 'mf-services',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   template: `
     <div class="page-header">
       <h2>Our Services</h2>
@@ -33,6 +33,7 @@ import { BookingsService } from './bookings.service';
           <span class="rating">{{ stars(s.rating || 0) }}</span>
           <span class="muted" *ngIf="s.rating"> {{ s.rating.toFixed(1) }}</span>
           <span class="muted" *ngIf="s.reviewCount"> ({{ s.reviewCount }} reviews)</span>
+          <a [routerLink]="['/services', s._id]" class="view-reviews">View details →</a>
         </div>
         <div class="service-tags" *ngIf="s.warranty">
           <span class="tag">🛡️ {{ s.warranty }} warranty</span>

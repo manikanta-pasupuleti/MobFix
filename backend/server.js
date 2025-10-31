@@ -19,6 +19,7 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/services', require('./routes/services'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/reviews', require('./routes/reviews'));
 
 app.get('/', (req, res) => res.json({ message: 'MobFix API running' }));
 
