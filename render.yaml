@@ -1,7 +1,7 @@
 services:
   - type: web
     name: mobfix-backend
-    env: node
+    runtime: node
     repo: https://github.com/manikanta-pasupuleti/MobFix.git
     branch: main
     plan: starter
@@ -24,14 +24,15 @@ services:
         sync: false
     healthCheckPath: /api/services
 
-  - type: static
+  - type: web
     name: mobfix-frontend
+    runtime: static
     repo: https://github.com/manikanta-pasupuleti/MobFix.git
     branch: main
     buildCommand: >-
       cd mobfix-frontend && npm ci && npx ng build --configuration production &&
       node -e "require('fs').writeFileSync('dist/mobfix-frontend/browser/assets/env.js', 'window.__env = window.__env || {}; window.__env.API_URL = ' + JSON.stringify(process.env.API_URL || '') + ';')"
-    publishPath: mobfix-frontend/dist/mobfix-frontend/browser
+    staticPublishPath: mobfix-frontend/dist/mobfix-frontend/browser
     envVars:
       - key: API_URL
         sync: false
