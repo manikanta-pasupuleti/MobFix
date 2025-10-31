@@ -28,7 +28,10 @@ services:
     runtime: static
     repo: https://github.com/manikanta-pasupuleti/MobFix.git
     branch: main
-    buildCommand: cd mobfix-frontend && chmod +x render-build.sh && ./render-build.sh
+    buildCommand: >-
+      cd mobfix-frontend && npm ci && npx ng build --configuration production &&
+      echo "window.__env = window.__env || {}; window.__env.API_URL = '${API_URL}';" > dist/mobfix-frontend/assets/env.js &&
+      echo "env.js created with API_URL=${API_URL}"
     staticPublishPath: dist/mobfix-frontend
     envVars:
       - key: API_URL
