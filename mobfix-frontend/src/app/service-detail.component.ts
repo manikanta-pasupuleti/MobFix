@@ -39,7 +39,7 @@ import { AuthService } from './auth.service';
             </div>
           </div>
 
-          <button class="btn primary" style="margin-top:1rem; padding:0.75rem 2rem">Book This Service</button>
+          <button class="btn primary" [routerLink]="['/book', service._id]" style="margin-top:1rem; padding:0.75rem 2rem">Book This Service</button>
         </div>
 
         <!-- Reviews Section -->

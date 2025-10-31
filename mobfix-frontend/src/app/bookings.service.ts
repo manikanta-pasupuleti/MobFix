@@ -20,7 +20,11 @@ export class BookingsService {
     return this.http.get(`${this.apiUrl}/bookings/mine`);
   }
 
+  getById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/bookings/${id}`);
+  }
+
   cancel(id: string) {
-    return this.http.delete(`${this.apiUrl}/bookings/${id}`);
+    return this.http.put(`${this.apiUrl}/bookings/${id}/cancel`, {});
   }
 }
