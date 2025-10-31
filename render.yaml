@@ -4,7 +4,6 @@ services:
     runtime: node
     repo: https://github.com/manikanta-pasupuleti/MobFix.git
     branch: main
-    plan: starter
     buildCommand: cd backend && npm ci
     startCommand: cd backend && npm start
     envVars:
