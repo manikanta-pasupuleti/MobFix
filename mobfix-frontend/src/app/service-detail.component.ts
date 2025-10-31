@@ -26,7 +26,7 @@ import { AuthService } from './auth.service';
           
           <div class="detail-meta">
             <div class="meta-item">
-              <strong>Price:</strong> ${{service.price}}
+              <strong>Price:</strong> <span>\${{service.price}}</span>
             </div>
             <div class="meta-item">
               <strong>Est. Time:</strong> {{service.estimatedTime}}
