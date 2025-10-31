@@ -31,7 +31,7 @@ services:
     buildCommand: >-
       cd mobfix-frontend && npm ci && npx ng build --configuration production &&
       node -e "require('fs').writeFileSync('dist/mobfix-frontend/browser/assets/env.js', 'window.__env = window.__env || {}; window.__env.API_URL = ' + JSON.stringify(process.env.API_URL || '') + ';')"
-    staticPublishPath: mobfix-frontend/dist/mobfix-frontend/browser
+    staticPublishPath: dist/mobfix-frontend/browser
     envVars:
       - key: API_URL
         sync: false
