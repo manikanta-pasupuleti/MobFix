@@ -30,8 +30,8 @@ services:
     branch: main
     buildCommand: >-
       cd mobfix-frontend && npm ci && npx ng build --configuration production &&
-      node -e "require('fs').writeFileSync('dist/mobfix-frontend/browser/assets/env.js', 'window.__env = window.__env || {}; window.__env.API_URL = ' + JSON.stringify(process.env.API_URL || '') + ';')"
-    staticPublishPath: dist/mobfix-frontend/browser
+      node -e "require('fs').writeFileSync('dist/mobfix-frontend/assets/env.js', 'window.__env = window.__env || {}; window.__env.API_URL = ' + JSON.stringify(process.env.API_URL || '') + ';')"
+    staticPublishPath: dist/mobfix-frontend
     envVars:
       - key: API_URL
         sync: false
