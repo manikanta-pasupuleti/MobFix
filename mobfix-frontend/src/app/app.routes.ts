@@ -7,6 +7,7 @@ import { BookingConfirmationComponent } from './booking-confirmation.component';
 import { LoginComponent } from './login.component';
 import { RegisterComponent } from './register.component';
 import { MyBookingsComponent } from './my-bookings.component';
+import { DashboardComponent } from './dashboard.component';
 import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
@@ -15,8 +16,9 @@ export const routes: Routes = [
 	{ path: 'services/:id', component: ServiceDetailComponent },
 	{ path: 'book/:id', component: BookServiceComponent, canActivate: [AuthGuard] },
 	{ path: 'booking-confirmation/:id', component: BookingConfirmationComponent, canActivate: [AuthGuard] },
+	{ path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+	{ path: 'my-bookings', component: MyBookingsComponent, canActivate: [AuthGuard] },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'register', component: RegisterComponent },
-	{ path: 'my-bookings', component: MyBookingsComponent, canActivate: [AuthGuard] },
 	{ path: '**', redirectTo: '' }
 ];
