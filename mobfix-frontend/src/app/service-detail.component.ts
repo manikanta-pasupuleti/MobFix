@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ServicesService } from './services.service';
 import { ReviewsService } from './reviews.service';
 import { AuthService } from './auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 @Component({
   selector: 'mf-service-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   template: `
     <div class="page-header">
       <button class="btn" (click)="goBack()" style="margin-bottom:1rem">← Back to Services</button>
