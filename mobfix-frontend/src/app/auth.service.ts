@@ -1,7 +1,7 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,8 +13,9 @@ export class AuthService {
 
   apiUrl = this.apiBase;
   
-  // Signal to track authentication state
-  private loggedInSignal = signal<boolean>(!!this.getToken());
+  // BehaviorSubject to track authentication state
+  private loggedInSubject = new BehaviorSubject<boolean>(!!this.getToken());
+  public loggedIn$ = this.loggedInSubject.asObservable();
 
   private getToken(): string | null {
     return localStorage.getItem('mf_token');
@@ -30,14 +31,16 @@ export class AuthService {
     } else {
       localStorage.removeItem('mf_token');
     }
-    // Update signal when token changes
-    this.loggedInSignal.set(!!value);
+    // Notify subscribers when token changes
+    this.loggedInSubject.next(!!value);
   }
 
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/users/login`, credentials).pipe(
       tap((res: any) => {
-        if (res && res.token) this.token = res.token;
+        if (res && res.token) {
+          this.token = res.token;
+        }
       })
     );
   }
@@ -45,7 +48,9 @@ export class AuthService {
   register(payload: { name: string; email: string; password: string }) {
     return this.http.post(`${this.apiUrl}/users/register`, payload).pipe(
       tap((res: any) => {
-        if (res && res.token) this.token = res.token;
+        if (res && res.token) {
+          this.token = res.token;
+        }
       })
     );
   }
@@ -55,7 +60,6 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    // Read from signal for reactivity
-    return this.loggedInSignal();
+    return !!this.getToken();
   }
 }
