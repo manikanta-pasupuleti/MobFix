@@ -39,23 +39,7 @@ import { BookingsService } from './bookings.service';
           <span class="tag">🛡️ {{ s.warranty }} warranty</span>
         </div>
         <div class="service-actions">
-          <button class="btn primary" (click)="openForm(s)">Book Now</button>
-        </div>
-        <div *ngIf="openFor === s._id" style="margin-top:0.75rem">
-          <div>
-            <label>Mobile model<br /><input [(ngModel)]="form.mobileModel" placeholder="e.g. iPhone 12" /></label>
-          </div>
-          <div>
-            <label>Issue<br /><input [(ngModel)]="form.issueDescription" placeholder="Short description" /></label>
-          </div>
-          <div style="display:flex; gap:0.5rem; margin-top:0.5rem">
-            <input type="date" [(ngModel)]="form.date" />
-            <input type="time" [(ngModel)]="form.time" />
-          </div>
-          <div style="margin-top:0.5rem; text-align:right">
-            <button class="btn" (click)="cancelForm()">Cancel</button>
-            <button class="btn primary" (click)="submitBooking(s)">Confirm</button>
-          </div>
+          <button class="btn primary" [routerLink]="['/book', s._id]">Book Now</button>
         </div>
       </div>
     </div>
@@ -66,9 +50,8 @@ export class ServicesComponent implements OnInit {
   filteredServices: any[] = [];
   categories: string[] = ['Screen', 'Battery', 'Camera', 'Charging', 'Audio', 'Software', 'Other'];
   selectedCategory: string = 'All';
-  openFor: string | null = null;
-  form: any = { mobileModel: '', issueDescription: '', date: '', time: '' };
-  constructor(private svc: ServicesService, private bs: BookingsService, private router: Router) {}
+  
+  constructor(private svc: ServicesService, private router: Router) {}
 
   ngOnInit() {
     this.svc.list().subscribe({ next: (res: any) => {
@@ -85,37 +68,6 @@ export class ServicesComponent implements OnInit {
     } else {
       this.filteredServices = this.services.filter(s => s.category === category);
     }
-  }
-
-  openForm(s: any) {
-    this.openFor = s._id;
-    // reset form
-    this.form = { mobileModel: '', issueDescription: '', date: '', time: '' };
-  }
-
-  cancelForm() {
-    this.openFor = null;
-  }
-
-  submitBooking(s: any) {
-    const payload = {
-      serviceId: s._id,
-      mobileModel: this.form.mobileModel || 'Unknown',
-      issueDescription: this.form.issueDescription || 'No description',
-      date: this.form.date || new Date().toISOString().slice(0,10),
-      time: this.form.time || '09:00'
-    };
-    this.bs.create(payload).subscribe({
-      next: (res: any) => {
-        // success -> navigate to my bookings
-        this.openFor = null;
-        this.router.navigate(['/my-bookings']);
-      },
-      error: (err) => {
-        console.error('Booking create failed', err);
-        alert('Failed to create booking. Please ensure you are logged in.');
-      }
-    });
   }
 
   imageFor(s: any) {
