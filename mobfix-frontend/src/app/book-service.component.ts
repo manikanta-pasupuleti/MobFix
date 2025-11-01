@@ -598,16 +598,20 @@ export class BookServiceComponent implements OnInit {
       ...this.booking
     };
 
+    console.log('Submitting booking data:', bookingData);
+
     this.bookingsService.create(bookingData).subscribe({
       next: (response: any) => {
         this.submitting = false;
+        console.log('Booking created successfully:', response);
         // Navigate to confirmation page with booking number
         this.router.navigate(['/booking-confirmation', response._id]);
       },
       error: (err) => {
         this.submitting = false;
-        console.error('Booking error:', err);
-        alert(err.error?.message || 'Failed to create booking. Please ensure you are logged in.');
+        console.error('Booking error details:', err);
+        const errorMessage = err.error?.message || err.message || 'Failed to create booking. Please ensure you are logged in.';
+        alert(errorMessage);
       }
     });
   }

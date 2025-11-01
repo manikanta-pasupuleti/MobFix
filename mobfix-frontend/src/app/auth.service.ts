@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -12,14 +12,26 @@ export class AuthService {
     : (/localhost|127\.0\.0\.1|::1/.test(window.location.hostname) ? 'http://localhost:5000/api' : '/api');
 
   apiUrl = this.apiBase;
+  
+  // Signal to track authentication state
+  private loggedInSignal = signal<boolean>(!!this.getToken());
 
-  get token(): string | null {
+  private getToken(): string | null {
     return localStorage.getItem('mf_token');
   }
 
+  get token(): string | null {
+    return this.getToken();
+  }
+
   set token(value: string | null) {
-    if (value) localStorage.setItem('mf_token', value);
-    else localStorage.removeItem('mf_token');
+    if (value) {
+      localStorage.setItem('mf_token', value);
+    } else {
+      localStorage.removeItem('mf_token');
+    }
+    // Update signal when token changes
+    this.loggedInSignal.set(!!value);
   }
 
   login(credentials: { email: string; password: string }): Observable<any> {
@@ -43,6 +55,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.token;
+    // Read from signal for reactivity
+    return this.loggedInSignal();
   }
 }

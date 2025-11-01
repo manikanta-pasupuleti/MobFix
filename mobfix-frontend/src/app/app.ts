@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from './auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +14,11 @@ import { AuthService } from './auth.service';
         <a routerLink="/" class="logo">MobFix</a>
         <ul class="nav">
           <li><a routerLink="/services">Services</a></li>
-          <li *ngIf="authService.isLoggedIn()"><a routerLink="/dashboard">Dashboard</a></li>
-          <li *ngIf="authService.isLoggedIn()"><a routerLink="/my-bookings">My Bookings</a></li>
-          <li *ngIf="!authService.isLoggedIn()"><a routerLink="/login">Login</a></li>
-          <li *ngIf="!authService.isLoggedIn()"><a routerLink="/register">Register</a></li>
-          <li *ngIf="authService.isLoggedIn()">
+          <li *ngIf="isLoggedIn()"><a routerLink="/dashboard">Dashboard</a></li>
+          <li *ngIf="isLoggedIn()"><a routerLink="/my-bookings">My Bookings</a></li>
+          <li *ngIf="!isLoggedIn()"><a routerLink="/login">Login</a></li>
+          <li *ngIf="!isLoggedIn()"><a routerLink="/register">Register</a></li>
+          <li *ngIf="isLoggedIn()">
             <a href="#" (click)="logout($event)" class="logout-btn">Logout</a>
           </li>
         </ul>
@@ -42,11 +43,22 @@ import { AuthService } from './auth.service';
 })
 export class App {
   protected readonly title = signal('mobfix-frontend');
-
+  
   constructor(
     public authService: AuthService,
     private router: Router
-  ) {}
+  ) {
+    // Listen to navigation events to update auth state
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      // This will trigger change detection
+    });
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 
   logout(event: Event) {
     event.preventDefault();
