@@ -44,10 +44,28 @@ const BookingSchema = new mongoose.Schema({
 // Generate unique booking number before saving
 BookingSchema.pre('save', async function(next) {
   if (!this.bookingNumber) {
-    const prefix = 'MF';
-    const timestamp = Date.now().toString().slice(-8);
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-    this.bookingNumber = `${prefix}${timestamp}${random}`;
+    let attempts = 0;
+    const maxAttempts = 5;
+    
+    while (attempts < maxAttempts) {
+      const prefix = 'MF';
+      const timestamp = Date.now().toString().slice(-8);
+      const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+      const bookingNumber = `${prefix}${timestamp}${random}`;
+      
+      // Check if this booking number already exists
+      const existing = await mongoose.model('Booking').findOne({ bookingNumber });
+      if (!existing) {
+        this.bookingNumber = bookingNumber;
+        console.log('Generated booking number:', bookingNumber);
+        return next();
+      }
+      
+      attempts++;
+      console.log('Booking number collision, retrying...', attempts);
+    }
+    
+    return next(new Error('Failed to generate unique booking number'));
   }
   next();
 });

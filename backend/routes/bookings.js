@@ -21,16 +21,30 @@ router.post('/', auth, async (req, res) => {
       notes
     } = req.body;
 
+    console.log('Booking request received:', {
+      userId: req.userId,
+      serviceId,
+      deviceBrand,
+      deviceModel,
+      preferredDate,
+      preferredTimeSlot,
+      contactPhone
+    });
+
     // Validate required fields
     if (!serviceId || !deviceBrand || !deviceModel || !issueDescription || !preferredDate || !preferredTimeSlot || !contactPhone) {
+      console.log('Missing required fields');
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
     // Check if service exists and get price
     const service = await Service.findById(serviceId);
     if (!service) {
+      console.log('Service not found:', serviceId);
       return res.status(400).json({ message: 'Service not found' });
     }
+
+    console.log('Service found:', service.serviceName, 'Price:', service.price);
 
     // Create booking with enhanced fields
     const booking = await Booking.create({
@@ -50,13 +64,20 @@ router.post('/', auth, async (req, res) => {
       status: 'Pending'
     });
 
+    console.log('Booking created successfully:', booking.bookingNumber);
+
     // Populate service details for response
     await booking.populate('serviceId');
 
     res.status(201).json(booking);
   } catch (err) {
     console.error('Booking creation error:', err);
-    res.status(500).json({ message: 'Server error creating booking' });
+    console.error('Error details:', err.message);
+    console.error('Stack trace:', err.stack);
+    res.status(500).json({ 
+      message: 'Server error creating booking',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 });
 
