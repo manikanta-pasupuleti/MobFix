@@ -589,16 +589,47 @@ export class BookServiceComponent implements OnInit {
   }
 
   submitBooking() {
-    if (!this.service) return;
+    if (!this.service) {
+      alert('Service not found. Please try again.');
+      return;
+    }
+
+    // Validate all required fields
+    const requiredFields = {
+      'Device Brand': this.booking.deviceBrand,
+      'Device Model': this.booking.deviceModel,
+      'Issue Description': this.booking.issueDescription,
+      'Preferred Date': this.booking.preferredDate,
+      'Time Slot': this.booking.preferredTimeSlot,
+      'Contact Phone': this.booking.contactPhone
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([_, value]) => !value)
+      .map(([field, _]) => field);
+
+    if (missingFields.length > 0) {
+      alert(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+      return;
+    }
 
     this.submitting = true;
 
     const bookingData = {
       serviceId: this.service._id,
-      ...this.booking
+      deviceBrand: this.booking.deviceBrand,
+      deviceModel: this.booking.deviceModel,
+      imeiNumber: this.booking.imeiNumber || '',
+      issueDescription: this.booking.issueDescription,
+      urgency: this.booking.urgency,
+      preferredDate: this.booking.preferredDate,
+      preferredTimeSlot: this.booking.preferredTimeSlot,
+      contactPhone: this.booking.contactPhone,
+      alternatePhone: this.booking.alternatePhone || '',
+      notes: this.booking.notes || ''
     };
 
-    console.log('Submitting booking data:', bookingData);
+    console.log('Submitting booking data:', JSON.stringify(bookingData, null, 2));
 
     this.bookingsService.create(bookingData).subscribe({
       next: (response: any) => {
@@ -610,8 +641,9 @@ export class BookServiceComponent implements OnInit {
       error: (err) => {
         this.submitting = false;
         console.error('Booking error details:', err);
+        console.error('Error response:', err.error);
         const errorMessage = err.error?.message || err.message || 'Failed to create booking. Please ensure you are logged in.';
-        alert(errorMessage);
+        alert(`Booking failed: ${errorMessage}`);
       }
     });
   }
