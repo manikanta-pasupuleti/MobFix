@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: mobfix-backend
+    runtime: node
+    repo: https://github.com/manikanta-pasupuleti/MobFix.git
+    branch: main
+    buildCommand: cd backend && npm ci
+    startCommand: cd backend && npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: "5000"
+      - key: NODE_ENV
+        value: "production"
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+    healthCheckPath: /api/services
+
+  - type: web
+    name: mobfix-frontend
+    runtime: static
+    repo: https://github.com/manikanta-pasupuleti/MobFix.git
+    branch: main
+    buildCommand: >-
+      cd mobfix-frontend && npm ci && npx ng build --configuration production &&
+      echo "window.__env = window.__env || {}; window.__env.API_URL = '${API_URL}';" > dist/mobfix-frontend/assets/env.js &&
+      echo "env.js created with API_URL=${API_URL}"
+    staticPublishPath: dist/mobfix-frontend
+    envVars:
+      - key: API_URL
+        sync: false
