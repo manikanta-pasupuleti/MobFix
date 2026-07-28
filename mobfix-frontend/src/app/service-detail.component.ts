@@ -264,7 +264,7 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   loadReviews(serviceId: string) {
-    this.reviewsService.getReviewsByService(serviceId).subscribe({
+    this.reviewsService.getByService(serviceId).subscribe({
       next: (reviews: any[]) => {
         this.reviews = reviews;
       },
@@ -283,7 +283,7 @@ export class ServiceDetailComponent implements OnInit {
       comment: this.newReview.comment.trim()
     };
 
-    this.reviewsService.createReview(review).subscribe({
+    this.reviewsService.create(review).subscribe({
       next: (createdReview) => {
         this.reviews.unshift(createdReview);
         this.newReview = { rating: 0, comment: '' };
