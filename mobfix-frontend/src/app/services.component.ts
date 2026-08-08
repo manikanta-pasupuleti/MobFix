@@ -152,6 +152,408 @@ import { BookingsService } from './bookings.service';
       <button class="btn primary" routerLink="/book/diagnostics">Get Free Diagnostics</button>
     </div>
   `,
+  styles: [`
+    :host {
+      display: block;
+      padding: 0.5rem 0 1.5rem;
+    }
+
+    .platform-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .platform-header h2 {
+      margin-bottom: 0.35rem;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin: 0;
+    }
+
+    .platform-tabs {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .platform-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      min-height: 96px;
+      padding: 0.9rem 0.75rem;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      color: #334155;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .platform-tab:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      border-color: rgba(13, 110, 253, 0.25);
+    }
+
+    .platform-tab.active {
+      background: linear-gradient(135deg, #0d6efd 0%, #2b8fff 100%);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 10px 24px rgba(13, 110, 253, 0.22);
+    }
+
+    .platform-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .platform-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .platform-count {
+      font-size: 0.78rem;
+      opacity: 0.8;
+      text-align: center;
+    }
+
+    .filter-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 2fr) auto;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box input {
+      padding-left: 2.5rem;
+      padding-right: 2.25rem;
+      border-radius: 999px;
+      border: 1px solid #dbe4ee;
+      background: #f8fbff;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      color: #64748b;
+      pointer-events: none;
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 0.6rem;
+      width: 1.75rem;
+      height: 1.75rem;
+      border: none;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    .category-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .chip {
+      border: 1px solid #dbe4ee;
+      background: #ffffff;
+      color: #334155;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+
+    .chip.active {
+      border-color: transparent;
+      background: linear-gradient(135deg, #0d6efd 0%, #2b8fff 100%);
+      color: #ffffff;
+    }
+
+    .sort-dropdown select {
+      min-width: 180px;
+      border-radius: 999px;
+      border: 1px solid #dbe4ee;
+      background: #ffffff;
+      color: #334155;
+    }
+
+    .results-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      color: #64748b;
+      margin-bottom: 1rem;
+    }
+
+    .active-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      background: #e7f5ff;
+      color: #0c4a7d;
+      font-weight: 600;
+    }
+
+    .active-filter button {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .loading-state,
+    .empty-state,
+    .help-section {
+      margin-top: 1rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .service-card {
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 20px;
+      padding: 1rem;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .card-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .badge.popular {
+      background: #fff4d6;
+      color: #8a5b00;
+    }
+
+    .badge.platform {
+      background: #e7f5ff;
+      color: #0c4a7d;
+    }
+
+    .service-img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      height: auto;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 0.9rem;
+      background: #f6f8fb;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      flex: 1;
+    }
+
+    .category-tag {
+      display: inline-flex;
+      width: fit-content;
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .service-title {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1.15rem;
+    }
+
+    .service-desc {
+      margin: 0;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    .service-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      padding-top: 0.25rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #334155;
+      font-size: 0.92rem;
+    }
+
+    .price {
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin: 0;
+      color: #334155;
+    }
+
+    .stars {
+      color: #f59e0b;
+      letter-spacing: 0.08rem;
+    }
+
+    .supported-brands {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .brand-chip,
+    .brand-more {
+      padding: 0.3rem 0.55rem;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 0.77rem;
+      font-weight: 700;
+    }
+
+    .card-footer {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .card-footer .btn {
+      flex: 1;
+      min-height: 42px;
+    }
+
+    .help-section {
+      padding: 1.25rem;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+      color: #ffffff;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+    }
+
+    .help-section h3,
+    .help-section p {
+      color: inherit;
+    }
+
+    .help-section .btn {
+      margin-top: 0.25rem;
+    }
+
+    @media (max-width: 1199px) {
+      .platform-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .filter-bar {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+
+      .sort-dropdown select {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 767px) {
+      :host {
+        padding-top: 0;
+      }
+
+      .platform-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .service-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .card-footer {
+        flex-direction: column;
+      }
+
+      .card-footer .btn {
+        width: 100%;
+      }
+
+      .help-section {
+        padding: 1rem;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+    }
+  `],
 })
 export class ServicesComponent implements OnInit {
   services: any[] = [];
