@@ -5,8 +5,14 @@ const bcrypt = require('bcrypt');
 
 const run = async () => {
   await connectDB(process.env.MONGO_URI || 'mongodb://localhost:27017/mobfix');
-  const username = process.env.ADMIN_USERNAME || 'admin';
-  const password = process.env.ADMIN_PASSWORD || 'admin123';
+  const username = process.env.ADMIN_USERNAME;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!username || !password) {
+    console.error('ADMIN_USERNAME and ADMIN_PASSWORD must be set before seeding the admin account.');
+    process.exit(1);
+  }
+
   const existing = await Admin.findOne({ username });
   if (existing) {
     console.log('Admin already exists');

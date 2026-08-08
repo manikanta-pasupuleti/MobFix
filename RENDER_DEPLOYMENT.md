@@ -43,7 +43,7 @@ This guide walks you through deploying the MobFix application (backend + fronten
    - Driver: Node.js, Version: 5.5 or later
    - Copy the connection string (looks like: `mongodb+srv://<username>:<password>@<cluster-url>/mobfix`)
    - **IMPORTANT:** Replace `<password>` with the actual password you copied in step 3
-   - Add a database name before the `?` (e.g., `mongodb+srv://mobfix_user:yourpassword@cluster0.xxxxx.mongodb.net/mobfix?retryWrites=true&w=majority`)
+   - Add a database name before the `?` (e.g., `mongodb+srv://<username>:<password>@<cluster-url>/mobfix?retryWrites=true&w=majority`)
    - **Save this connection string** - you'll need it for Render
 
 ---
@@ -303,7 +303,7 @@ If you encounter issues:
 
 ### Backend (`mobfix-backend`)
 ```
-MONGO_URI=mongodb+srv://user:pass@cluster.xxxxx.mongodb.net/mobfix?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/mobfix?retryWrites=true&w=majority
 JWT_SECRET=your-64-char-random-string
 PORT=5000
 NODE_ENV=production
