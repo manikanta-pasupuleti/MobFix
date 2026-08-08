@@ -11,6 +11,18 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_SECURE
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
       - key: PORT
         value: "5000"
       - key: NODE_ENV

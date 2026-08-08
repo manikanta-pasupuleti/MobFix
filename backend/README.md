@@ -5,6 +5,7 @@ This is the backend for MobFix — a mobile repair booking system. It is built w
 Features:
 - JWT authentication for users
 - User registration/login
+- Welcome emails sent via SMTP after registration
 - CRUD services (admin)
 - Booking creation/editing/cancelling
 
@@ -13,6 +14,7 @@ Getting started
 1. Copy the env file:
 
    - Create a `.env` file in `backend/` with values from `.env.example`.
+   - Add valid SMTP values so registration can send a welcome email in production.
 
 2. Install dependencies:
 

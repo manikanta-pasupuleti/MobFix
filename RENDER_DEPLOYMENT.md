@@ -46,6 +46,16 @@ This guide walks you through deploying the MobFix application (backend + fronten
    - Add a database name before the `?` (e.g., `mongodb+srv://<username>:<password>@<cluster-url>/mobfix?retryWrites=true&w=majority`)
    - **Save this connection string** - you'll need it for Render
 
+6. **Set up SMTP for welcome emails**:
+    - Choose an email provider that supports SMTP, such as Gmail App Passwords, SendGrid SMTP, Mailgun, or Outlook SMTP.
+    - Collect these values from that provider:
+       - SMTP host
+       - SMTP port
+       - SMTP username
+       - SMTP password or app password
+       - Verified sender address for `MAIL_FROM`
+    - Keep these values ready for the Render environment step below.
+
 ---
 
 ## Step 2: Connect GitHub to Render
@@ -85,6 +95,12 @@ This guide walks you through deploying the MobFix application (backend + fronten
    | `ADMIN_USERNAME` | `admin` | Or your preferred admin username |
    | `ADMIN_PASSWORD` | `SecurePassword123!` | ⚠️ Change from default! |
    | `FRONTEND_URL` | (leave empty for now, add after frontend deploys) | Will be like `https://mobfix-frontend.onrender.com` |
+   | `SMTP_HOST` | Your SMTP provider host | Example: `smtp.gmail.com` or `smtp.sendgrid.net` |
+   | `SMTP_PORT` | SMTP port | Example: `587` |
+   | `SMTP_SECURE` | `false` for 587, `true` for 465 | Match your provider requirements |
+   | `SMTP_USER` | SMTP login username | Usually your email or provider-specific username |
+   | `SMTP_PASS` | SMTP password or app password | Use a secret value from your provider |
+   | `MAIL_FROM` | Verified sender address | Example: `MobFix <no-reply@yourdomain.com>` |
 
 3. **Save and deploy**:
    - Click "Save Changes"
@@ -215,6 +231,20 @@ You need to add sample services to your database. You can do this in two ways:
 - Verify `API_URL` environment variable is set correctly in Render
 - Check that the backend URL in `API_URL` ends with `/api` (not just the root)
 - Ensure services were seeded in the database (Step 4)
+
+### Email Issues
+
+**Problem:** Registration succeeds but no welcome email arrives
+- Verify `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, and `SMTP_PASS` are set in Render
+- Confirm `MAIL_FROM` is a verified sender for your email provider
+- Check the backend logs for SMTP connection errors
+- For Gmail, use an App Password instead of your normal account password
+
+**Problem:** SMTP authentication fails
+- Make sure `SMTP_SECURE` matches the port you use
+- For port `587`, use `SMTP_SECURE=false`
+- For port `465`, use `SMTP_SECURE=true`
+- Confirm the provider allows SMTP access from your account
 
 **Problem:** CORS errors in browser console
 - **Solution:** Backend has CORS enabled globally, but if you changed it:
