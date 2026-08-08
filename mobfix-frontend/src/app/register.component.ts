@@ -122,7 +122,10 @@ import { AuthService } from './auth.service';
           
           <div class="alert success" *ngIf="message">
             <span class="alert-icon">✓</span>
-            {{ message }}
+            <div>
+              <div>{{ message }}</div>
+              <small *ngIf="welcomeEmailNote">{{ welcomeEmailNote }}</small>
+            </div>
           </div>
           
           <div class="alert error" *ngIf="error">
@@ -148,6 +151,7 @@ export class RegisterComponent {
   agreeTerms = false;
   loading = false;
   message = '';
+  welcomeEmailNote = '';
   error = '';
   
   constructor(private auth: AuthService, private router: Router) {}
@@ -174,15 +178,21 @@ export class RegisterComponent {
     
     this.error = '';
     this.message = '';
+    this.welcomeEmailNote = '';
     this.loading = true;
     
     this.auth.register({ name: this.name, email: this.email, password: this.password }).subscribe({
       next: (res) => {
         this.loading = false;
-        this.message = 'Account created successfully! Redirecting...';
+        this.message = 'Registration Successful';
+        if (res?.welcomeEmail?.sent) {
+          this.welcomeEmailNote = 'Welcome email sent to your inbox.';
+        } else {
+          this.welcomeEmailNote = 'Welcome email will be sent when SMTP is configured.';
+        }
         setTimeout(() => {
           this.router.navigate(['/services']);
-        }, 500);
+        }, 1200);
       },
       error: (err) => {
         this.loading = false;
