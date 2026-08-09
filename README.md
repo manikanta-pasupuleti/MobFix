@@ -1,100 +1,125 @@
-# 📱 MobFix — Device Repair Booking Platform
+# MobFix
 
-A full-stack **device repair booking platform** that allows users to discover, filter, and book repair services for smartphones, tablets, laptops, and web applications.
+MobFix is a full-stack device repair booking platform for smartphones, tablets, laptops, and web applications. It combines a modern Angular frontend with a Node.js, Express, and MongoDB backend to deliver secure authentication, service discovery, booking management, and a responsive customer experience.
 
-Built with **Angular, Node.js, Express.js, and MongoDB**, MobFix provides secure authentication, service discovery, booking management, and a responsive user experience.
+## Project Highlights
 
----
-
-## 🚀 Overview
-
-MobFix simplifies the process of finding and booking device repair services through a centralized platform.
-
-Users can:
-
-- Browse repair services by device platform
-- Search and filter services
-- View pricing, ratings, warranty, and estimated repair time
-- Register and securely log in
-- Book repair services
-- Track and manage bookings
-- Cancel pending bookings
-- Receive toast notifications
-
----
-
-## ✨ Features
-
-### 🔐 Authentication
-
-- JWT-based user authentication
-- User registration and login
-- Protected API routes
-- Authenticated user profile
-- Secure password handling
+- Secure user registration and login with JWT authentication
+- Device repair service browsing with search, filters, sorting, and categories
+- Booking creation, tracking, cancellation, and booking details
+- Responsive UI designed for desktop and mobile users
 - Welcome email delivery after registration via SMTP
 
-### 🔧 Service Discovery
+## Tech Stack
 
-Services are organized into multiple platforms:
+- Frontend: Angular 20, TypeScript, RxJS
+- Backend: Node.js, Express.js
+- Database: MongoDB with Mongoose
+- Authentication: JWT, bcrypt
+- Infrastructure: Render deployment, environment-based configuration
+
+## Core Features
+
+### Authentication
+
+- User registration and login
+- Protected API routes
+- Authenticated user profile endpoint
+- Secure password hashing
+- Welcome email notification after successful signup
+
+### Service Discovery
+
+MobFix organizes repair services by platform:
 
 | Platform | Supported Services |
 |---|---|
-| 🤖 Android | Samsung, Google Pixel, OnePlus, Xiaomi |
-| 🍎 iOS | iPhone screen, battery, camera, charging |
-| 📲 Tablet | iPad Pro, Air, Mini, Android tablets |
-| 💻 Laptop | MacBook, Dell, HP, Lenovo |
-| 🌐 Website | Bug fixing, optimization, maintenance |
+| Android | Samsung, Google Pixel, OnePlus, Xiaomi |
+| iOS | Screen, battery, camera, charging |
+| Tablet | iPad Pro, Air, Mini, Android tablets |
+| Laptop | MacBook, Dell, HP, Lenovo |
+| Website | Bug fixing, optimization, maintenance |
 
 Users can:
 
 - Search services in real time
-- Filter by platform
-- Filter by category
-- Sort by price
-- Sort by rating
-- Sort by popularity
+- Filter by platform or category
+- Sort by price, rating, or popularity
+- Review pricing, warranty, and estimated repair time
 
-### 📅 Booking Management
+### Booking Management
 
 - Create repair bookings
 - View personal bookings
 - Track booking status
-- Filter bookings by status
 - View booking details
-- Cancel bookings
+- Cancel pending bookings
 
-### 🎨 User Interface
+### User Experience
 
-- Responsive design
-- Modern UI/UX
-- Toast notifications
+- Responsive layout for laptop and mobile screens
 - Interactive service cards
-- Status indicators
-- Booking detail modals
-- Mobile-friendly layout
+- Toast notifications
+- Clean, modern navigation flow
 
----
-
-## 🏗️ System Architecture
+## Architecture
 
 ```text
-                    ┌──────────────────────┐
-                    │      Angular 20      │
-                    │      Frontend        │
-                    └──────────┬───────────┘
-                               │
-                               │ REST API
-                               ▼
-                    ┌──────────────────────┐
-                    │   Node.js + Express  │
-                    │       Backend        │
-                    └──────────┬───────────┘
-                               │
-                    ┌──────────┴──────────┐
-                    │                     │
-                    ▼                     ▼
-             ┌─────────────┐      ┌─────────────┐
-             │   MongoDB   │      │ JWT Auth    │
-             │   Database  │      │ Middleware  │
-             └─────────────┘      └─────────────┘
+Angular Frontend
+       |
+       | REST API
+       v
+Node.js / Express Backend
+       |
+       +-- JWT Authentication
+       +-- MongoDB / Mongoose
+       +-- SMTP Welcome Emails
+```
+
+## Getting Started
+
+### Backend
+
+```powershell
+cd backend
+npm install
+copy .env.example .env
+npm run dev
+```
+
+### Frontend
+
+```powershell
+cd mobfix-frontend
+npm install
+npm start
+```
+
+## Environment Variables
+
+Configure the backend with these values:
+
+- `MONGO_URI`
+- `JWT_SECRET`
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_SECURE`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `MAIL_FROM`
+- `FRONTEND_URL`
+
+## API Summary
+
+- `POST /api/users/register`
+- `POST /api/users/login`
+- `GET /api/users/me`
+- `GET /api/services`
+- `POST /api/bookings`
+- `GET /api/bookings/mine`
+
+## Deployment
+
+The project includes Render deployment support through `render.yaml` and the deployment guide in `RENDER_DEPLOYMENT.md`.
