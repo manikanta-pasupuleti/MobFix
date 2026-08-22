@@ -22,6 +22,7 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
           <li><a routerLink="/services" routerLinkActive="active">Services</a></li>
           <li *ngIf="isLoggedIn"><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
           <li *ngIf="isLoggedIn"><a routerLink="/my-bookings" routerLinkActive="active">My Bookings</a></li>
+          <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
           <li *ngIf="!isLoggedIn"><a routerLink="/login" routerLinkActive="active" class="nav-btn">Login</a></li>
           <li *ngIf="!isLoggedIn"><a routerLink="/register" routerLinkActive="active" class="nav-btn primary">Sign Up</a></li>
           <li *ngIf="isLoggedIn" class="user-menu">
@@ -185,6 +186,7 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
 })
 export class App implements OnInit {
   isLoggedIn = false;
+  isAdmin = false;
   userInitial = '';
 
   private authService = inject(AuthService);
@@ -194,11 +196,15 @@ export class App implements OnInit {
   constructor() {
     this.authService.loggedIn$
       .pipe(takeUntilDestroyed())
-      .subscribe(loggedIn => { this.isLoggedIn = loggedIn; });
+      .subscribe(loggedIn => {
+        this.isLoggedIn = loggedIn;
+        this.isAdmin = loggedIn && this.authService.isAdmin();
+      });
 
     this.authService.user$
       .pipe(takeUntilDestroyed())
       .subscribe(user => {
+        this.isAdmin = !!user && this.authService.isAdmin();
         this.userInitial = user?.name ? user.name.charAt(0).toUpperCase() : (user?.email ? user.email.charAt(0).toUpperCase() : 'U');
       });
   }

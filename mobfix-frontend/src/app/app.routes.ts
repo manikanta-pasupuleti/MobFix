@@ -9,6 +9,8 @@ import { RegisterComponent } from './register.component';
 import { MyBookingsComponent } from './my-bookings.component';
 import { DashboardComponent } from './dashboard.component';
 import { AuthGuard } from './auth.guard';
+import { AdminGuard } from './admin.guard';
+import { AdminPageComponent } from './admin-page.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -18,6 +20,7 @@ export const routes: Routes = [
 	{ path: 'booking-confirmation/:id', component: BookingConfirmationComponent, canActivate: [AuthGuard] },
 	{ path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
 	{ path: 'my-bookings', component: MyBookingsComponent, canActivate: [AuthGuard] },
+	{ path: 'admin', component: AdminPageComponent, canActivate: [AuthGuard, AdminGuard] },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'register', component: RegisterComponent },
 	{ path: '**', redirectTo: '' }
