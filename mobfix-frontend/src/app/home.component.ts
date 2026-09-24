@@ -8,220 +8,76 @@ import { AuthService } from './auth.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <span class="hero-badge">🔧 #1 Device Repair Service</span>
-          <h1 class="hero-title">Fix Any Device, Any Platform</h1>
-          <p class="hero-subtitle">From smartphones to laptops, websites to apps — we repair it all. Book a certified technician in minutes with same-day options and warranty-backed service.</p>
-          <div class="hero-cta">
-            <a class="btn primary large" routerLink="/services">
-              <span>Browse All Services</span>
-              <span class="btn-icon">→</span>
-            </a>
-            <a class="btn secondary large" routerLink="/register" *ngIf="!isLoggedIn">Get Started Free</a>
-            <a class="btn secondary large" routerLink="/my-bookings" *ngIf="isLoggedIn">My Bookings</a>
-          </div>
-          <div class="trust-badges">
-            <span class="trust-badge">⭐ 4.9/5 Rating</span>
-            <span class="trust-badge">🛡️ 90-Day Warranty</span>
-            <span class="trust-badge">⚡ Same-Day Service</span>
-          </div>
+    <section class="home-hero">
+      <div class="hero-content">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Device care, made human</p>
+        <h1>Bring your broken tech.<br /><em>Leave with peace of mind.</em></h1>
+        <p class="hero-copy">From cracked screens to stubborn software, MobFix connects you with a skilled repair specialist and keeps you in the loop from request to ready.</p>
+        <div class="hero-actions">
+          <a class="btn primary large" routerLink="/services">Find my repair <span class="btn-icon">↗</span></a>
+          <a class="text-link" routerLink="/services">Browse all services <span>→</span></a>
         </div>
-        <div class="hero-visual">
-          <div class="hero-stats">
-            <div class="stat-card">
-              <span class="stat-number">10K+</span>
-              <span class="stat-label">Repairs Done</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">98%</span>
-              <span class="stat-label">Satisfaction</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">24hr</span>
-              <span class="stat-label">Avg Turnaround</span>
-            </div>
-          </div>
+        <div class="hero-proof">
+          <div class="avatar-stack" aria-hidden="true"><span>AM</span><span>JR</span><span>SK</span><span>+</span></div>
+          <p><strong>Loved by 10,000+ customers</strong><br /><span>4.9 average rating across every repair</span></p>
         </div>
+      </div>
+      <div class="hero-art" aria-label="A repaired smartphone ready to be collected">
+        <div class="art-sun"></div>
+        <div class="art-label label-top"><strong>01</strong><span>Tell us<br />what happened</span></div>
+        <div class="phone-card">
+          <div class="phone-speaker"></div>
+          <div class="phone-screen"><span class="screen-kicker">MOBFIX / 2026</span><strong>Good as<br /><em>new.</em></strong><span class="screen-line"></span></div>
+          <div class="phone-home"></div>
+        </div>
+        <div class="art-label label-bottom"><span class="status-check">✓</span><span>Clear quote<br />before we fix</span></div>
       </div>
     </section>
 
-    <!-- Platform Selection Section -->
-    <section class="platform-section">
-      <h2 class="section-title">What Do You Need Help With?</h2>
-      <p class="section-subtitle">Select your device type to find the right repair service</p>
-      
-      <div class="platform-grid">
-        <a class="platform-card" [routerLink]="['/services']" [queryParams]="{platform: 'Android'}">
-          <div class="platform-icon android">🤖</div>
-          <h3>Android</h3>
-          <p>Samsung, Google Pixel, OnePlus, Xiaomi & more</p>
-          <span class="platform-link">View Services →</span>
-        </a>
-        
-        <a class="platform-card" [routerLink]="['/services']" [queryParams]="{platform: 'iOS'}">
-          <div class="platform-icon ios">🍎</div>
-          <h3>iPhone / iOS</h3>
-          <p>iPhone 15, 14, 13, 12 & all models</p>
-          <span class="platform-link">View Services →</span>
-        </a>
-        
-        <a class="platform-card" [routerLink]="['/services']" [queryParams]="{platform: 'Tablet'}">
-          <div class="platform-icon tablet">📲</div>
-          <h3>Tablet / iPad</h3>
-          <p>iPad Pro, Air, Mini & Android tablets</p>
-          <span class="platform-link">View Services →</span>
-        </a>
-        
-        <a class="platform-card" [routerLink]="['/services']" [queryParams]="{platform: 'Laptop'}">
-          <div class="platform-icon laptop">💻</div>
-          <h3>Laptop</h3>
-          <p>MacBook, Dell, HP, Lenovo & more</p>
-          <span class="platform-link">View Services →</span>
-        </a>
-        
-        <a class="platform-card" [routerLink]="['/services']" [queryParams]="{platform: 'Website'}">
-          <div class="platform-icon website">🌐</div>
-          <h3>Website / App</h3>
-          <p>Bug fixes, optimization & maintenance</p>
-          <span class="platform-link">View Services →</span>
-        </a>
-        
-        <a class="platform-card highlight" routerLink="/services">
-          <div class="platform-icon all">🔧</div>
-          <h3>All Services</h3>
-          <p>Browse our complete service catalog</p>
-          <span class="platform-link">View All →</span>
+    <section class="trust-strip" aria-label="MobFix guarantees">
+      <div><span class="strip-number">01</span><span><strong>Transparent quotes</strong><small>Know the price first</small></span></div>
+      <div><span class="strip-number">02</span><span><strong>Skilled specialists</strong><small>Care for every device</small></span></div>
+      <div><span class="strip-number">03</span><span><strong>90-day warranty</strong><small>Confidence after pickup</small></span></div>
+      <a routerLink="/services">Why MobFix? <span>↗</span></a>
+    </section>
+
+    <section class="home-section service-preview">
+      <div class="section-heading"><div><p class="eyebrow">What needs fixing?</p><h2>Start with the problem.</h2></div><a class="text-link" routerLink="/services">See every service <span>→</span></a></div>
+      <div class="repair-grid">
+        <a class="repair-tile" *ngFor="let service of popularServices" routerLink="/services">
+          <span class="repair-index">{{ service.index }}</span><img [src]="service.image" [alt]="service.name" /><span class="repair-copy"><strong>{{ service.name }}</strong><small>{{ service.note }}</small></span><span class="tile-arrow">↗</span>
         </a>
       </div>
     </section>
 
-    <!-- Popular Services Section -->
-    <section class="popular-section">
-      <h2 class="section-title">Most Popular Services</h2>
-      <div class="popular-grid">
-        <div class="popular-card" *ngFor="let service of popularServices">
-          <span class="popular-badge">🔥 Popular</span>
-          <div class="popular-icon">{{ service.icon }}</div>
-          <h4>{{ service.name }}</h4>
-          <p>{{ service.desc }}</p>
-          <div class="popular-meta">
-            <span class="popular-price">From \${{ service.price }}</span>
-            <span class="popular-platform">{{ service.platform }}</span>
-          </div>
-          <a class="btn primary small" routerLink="/services">Book Now</a>
-        </div>
+    <section class="journey-section">
+      <div class="journey-intro"><p class="eyebrow">The MobFix way</p><h2>From issue<br /><em>to invoice.</em></h2><p>You should never have to chase a repair update. We make every step visible, understandable, and yours to approve.</p><a class="btn dark" routerLink="/services">Book a repair <span>↗</span></a></div>
+      <div class="journey-steps">
+        <div class="journey-step" *ngFor="let step of journeySteps"><span>{{ step.number }}</span><div><strong>{{ step.title }}</strong><p>{{ step.copy }}</p></div></div>
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <h2 class="section-title">Why Choose MobFix?</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🔧</div>
-          <h3>Expert Technicians</h3>
-          <p>Our certified technicians have years of experience with all devices and platforms.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Fast Turnaround</h3>
-          <p>Most repairs completed within 24 hours. Same-day service available for urgent needs.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🛡️</div>
-          <h3>Quality Guarantee</h3>
-          <p>All repairs backed by our 90-day warranty. We use OEM-grade replacement parts.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">💰</div>
-          <h3>Transparent Pricing</h3>
-          <p>No hidden fees. Get upfront quotes before any work begins.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📱</div>
-          <h3>All Platforms</h3>
-          <p>Android, iOS, tablets, laptops, websites — we handle everything.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📍</div>
-          <h3>Easy Booking</h3>
-          <p>Book online in minutes. Choose your preferred date and time slot.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section class="how-it-works">
-      <h2 class="section-title">How It Works</h2>
-      <div class="steps-container">
-        <div class="step-item">
-          <div class="step-number">1</div>
-          <h3>Select Platform</h3>
-          <p>Choose your device type (Android, iOS, Laptop, etc.)</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-item">
-          <div class="step-number">2</div>
-          <h3>Pick Service</h3>
-          <p>Browse and select the repair you need</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-item">
-          <div class="step-number">3</div>
-          <h3>Book & Pay</h3>
-          <p>Choose your time slot and confirm</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-item">
-          <div class="step-number">4</div>
-          <h3>Get Fixed!</h3>
-          <p>We repair and you're done!</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Brands Section -->
-    <section class="brands-section">
-      <h2 class="section-title">Brands We Service</h2>
-      <div class="brands-grid">
-        <div class="brand-item">🍎 Apple</div>
-        <div class="brand-item">📱 Samsung</div>
-        <div class="brand-item">🔵 Google</div>
-        <div class="brand-item">🔴 OnePlus</div>
-        <div class="brand-item">🟠 Xiaomi</div>
-        <div class="brand-item">💻 Dell</div>
-        <div class="brand-item">🖥️ HP</div>
-        <div class="brand-item">⬛ Lenovo</div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="cta-content">
-        <h2>Ready to Fix Your Device?</h2>
-        <p>Join thousands of satisfied customers. Book your repair today!</p>
-        <div class="cta-buttons">
-          <a class="btn primary large" routerLink="/services">Browse Services</a>
-          <a class="btn secondary large inverted" href="tel:+1234567890">📞 Call Us</a>
-        </div>
-      </div>
-    </section>
+    <section class="closing-cta"><p class="eyebrow">Ready when you are</p><h2>Your device deserves<br /><em>a better fix.</em></h2><a class="btn primary large" routerLink="/services">Start your repair <span>↗</span></a></section>
   `,
 })
 export class HomeComponent implements OnInit {
   isLoggedIn = false;
-  
+
   popularServices = [
-    { name: 'iPhone Screen Repair', desc: 'Fix cracked screens for all iPhone models', price: 129, icon: '📱', platform: 'iOS' },
-    { name: 'Android Battery Swap', desc: 'Restore battery life on any Android', price: 49, icon: '🔋', platform: 'Android' },
-    { name: 'Laptop Screen Fix', desc: 'Replace broken laptop displays', price: 199, icon: '💻', platform: 'Laptop' },
-    { name: 'Website Bug Fixes', desc: 'Fix errors and broken features', price: 99, icon: '🌐', platform: 'Website' }
+    { index: '01', name: 'Screen replacement', note: 'Cracked, black or unresponsive display', image: 'assets/images/screen-replacement.svg' },
+    { index: '02', name: 'Battery replacement', note: 'Fast drain, swelling or sudden shutdowns', image: 'assets/images/battery-replacement.svg' },
+    { index: '03', name: 'Charging problems', note: 'Loose ports, slow charging or no power', image: 'assets/images/charging-port-repair.svg' },
+    { index: '04', name: 'Software issues', note: 'Freezing, boot loops and app errors', image: 'assets/images/software-issues.svg' },
   ];
-  
+
+  journeySteps = [
+    { number: '01', title: 'Describe the issue', copy: 'Tell us your device and what went wrong. Photos help, but are never required.' },
+    { number: '02', title: 'Review your quote', copy: 'A specialist checks the details and you approve the estimate before work begins.' },
+    { number: '03', title: 'Track the progress', copy: 'Get clear updates while your repair moves from diagnosis to ready.' },
+  ];
+
   constructor(private auth: AuthService) {}
-  
+
   ngOnInit() {
     this.isLoggedIn = this.auth.isLoggedIn();
     this.auth.loggedIn$.subscribe(status => {

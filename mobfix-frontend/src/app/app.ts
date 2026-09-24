@@ -15,16 +15,17 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
     <header class="mobfix-header">
       <nav>
         <a routerLink="/" class="logo">
-          <span class="logo-icon">📱</span>
-          <span class="logo-text">MobFix</span>
+          <span class="logo-mark" aria-hidden="true">+</span>
+          <span class="logo-text">mob<span>fix</span></span>
         </a>
+        <span class="header-note">Repairs, without the runaround.</span>
         <ul class="nav">
-          <li><a routerLink="/services" routerLinkActive="active">Services</a></li>
+          <li><a routerLink="/services" routerLinkActive="active">Find a repair</a></li>
           <li *ngIf="isLoggedIn"><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
           <li *ngIf="isLoggedIn"><a routerLink="/my-bookings" routerLinkActive="active">My Bookings</a></li>
           <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
-          <li *ngIf="!isLoggedIn"><a routerLink="/login" routerLinkActive="active" class="nav-btn">Login</a></li>
-          <li *ngIf="!isLoggedIn"><a routerLink="/register" routerLinkActive="active" class="nav-btn primary">Sign Up</a></li>
+          <li *ngIf="!isLoggedIn"><a routerLink="/login" routerLinkActive="active" class="nav-btn">Log in</a></li>
+          <li *ngIf="!isLoggedIn"><a routerLink="/register" routerLinkActive="active" class="nav-btn primary">Start a repair</a></li>
           <li *ngIf="isLoggedIn" class="user-menu">
             <span class="user-avatar">{{ userInitial }}</span>
             <a href="#" (click)="logout($event)" class="logout-btn">Logout</a>
@@ -40,16 +41,15 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
     <footer class="mobfix-footer">
       <div class="footer-content">
         <div class="footer-brand">
-          <span class="logo-icon">📱</span>
-          <span>MobFix</span>
+          <span class="logo-mark" aria-hidden="true">+</span>
+          <span>mob<span>fix</span></span>
         </div>
         <div class="footer-links">
-          <a href="#">About</a>
-          <a href="#">Contact</a>
-          <a href="#">Terms</a>
-          <a href="#">Privacy</a>
+          <a routerLink="/services">Services</a>
+          <a routerLink="/register">Create account</a>
+          <a routerLink="/login">Log in</a>
         </div>
-        <div class="footer-copy">© 2025 MobFix. All rights reserved.</div>
+        <div class="footer-copy">© 2026 MobFix. Clear repairs, better care.</div>
       </div>
     </footer>
 
@@ -60,12 +60,12 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
       :host { display: flex; flex-direction: column; min-height: 100vh; }
 
       .mobfix-header {
-        padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
-        color: white;
+        padding: 1rem 1.5rem;
+        background: #111b19;
+        color: #f7f6f0;
         display: flex;
         align-items: center;
-        box-shadow: 0 2px 12px rgba(13,110,253,0.2);
+        box-shadow: 0 1px 0 rgba(255,255,255,0.08);
         position: sticky;
         top: 0;
         z-index: 100;
@@ -81,15 +81,36 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
 
       .mobfix-header .logo {
         font-weight: 800;
-        color: white;
+        color: #f7f6f0;
         text-decoration: none;
-        font-size: 1.4rem;
+        font-size: 1.55rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
       }
 
-      .logo-icon { font-size: 1.5rem; }
+      .logo-mark {
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #c7f36b;
+        color: #111b19;
+        font-size: 1.45rem;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .logo-text span, .footer-brand span span { color: #c7f36b; }
+
+      .header-note {
+        margin-left: 2rem;
+        color: rgba(247,246,240,0.58);
+        font-size: 0.82rem;
+        letter-spacing: 0.02em;
+      }
 
       .mobfix-header .nav {
         list-style: none;
@@ -101,36 +122,36 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
       }
 
       .mobfix-header a {
-        color: rgba(255,255,255,0.9);
+        color: rgba(247,246,240,0.72);
         text-decoration: none;
         transition: all 0.2s;
         padding: 0.5rem 0.75rem;
-        border-radius: 8px;
+        border-radius: 999px;
         font-weight: 500;
       }
 
       .mobfix-header a:hover,
       .mobfix-header a.active {
-        color: white;
-        background: rgba(255,255,255,0.15);
+        color: #f7f6f0;
+        background: rgba(255,255,255,0.09);
       }
 
-      .nav-btn { border: 1px solid rgba(255,255,255,0.3) !important; }
+      .nav-btn { border: 1px solid rgba(247,246,240,0.22) !important; }
 
       .nav-btn.primary {
-        background: white !important;
-        color: #0d6efd !important;
+        background: #c7f36b !important;
+        color: #111b19 !important;
         font-weight: 600 !important;
       }
 
-      .nav-btn.primary:hover { background: #f8f9fa !important; }
+      .nav-btn.primary:hover { background: #dcff91 !important; }
 
       .user-menu { display: flex; align-items: center; gap: 0.5rem; }
 
       .user-avatar {
         width: 32px;
         height: 32px;
-        background: rgba(255,255,255,0.2);
+        background: rgba(199,243,107,0.2);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -151,8 +172,8 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
       }
 
       .mobfix-footer {
-        background: #1e293b;
-        color: #94a3b8;
+        background: #111b19;
+        color: rgba(247,246,240,0.6);
         padding: 2rem 1.5rem;
         margin-top: auto;
       }
@@ -167,17 +188,18 @@ import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.comp
         gap: 1rem;
       }
 
-      .footer-brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: white; }
+      .footer-brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: #f7f6f0; }
 
       .footer-links { display: flex; gap: 1.5rem; }
 
-      .footer-links a { color: #94a3b8; text-decoration: none; transition: color 0.2s; }
-      .footer-links a:hover { color: white; }
+      .footer-links a { color: rgba(247,246,240,0.6); text-decoration: none; transition: color 0.2s; }
+      .footer-links a:hover { color: #c7f36b; }
 
       .footer-copy { font-size: 0.875rem; }
 
       @media (max-width: 768px) {
         .mobfix-header nav { flex-wrap: wrap; }
+        .header-note { display: none; }
         .mobfix-header .nav { width: 100%; margin-top: 0.75rem; justify-content: center; }
         .footer-content { flex-direction: column; text-align: center; }
       }
