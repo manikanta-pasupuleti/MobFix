@@ -1,138 +1,325 @@
 # MobFix
 
-MobFix is a full-stack device repair booking platform for smartphones, tablets, laptops, and web applications. It combines a modern Angular frontend with a Node.js, Express, and MongoDB backend to deliver secure authentication, service discovery, booking management, and a responsive customer experience.
+MobFix is a device-repair booking and operations platform. Customers can find a repair service, choose an appointment, receive a quote, and follow the repair through completion. Staff use the same system to manage bookings, assign technicians, and update repair progress.
 
-## Project Highlights
+The application is built with Angular, Node.js, Express, and MongoDB. It is currently in active product development: the core booking and staff workflows are in place, while notifications, persistent audit logs, and intelligent diagnosis remain planned work.
 
-- Secure user registration and login with JWT authentication
-- Device repair service browsing with search, filters, sorting, and categories
-- Booking creation, tracking, cancellation, and booking details
-- Responsive UI designed for desktop and mobile users
-- Welcome email delivery after registration via SMTP
+## Live Application
 
-## Tech Stack
+| Component | Link | Current check |
+|---|---|---|
+| Customer application | [mobfix-frontend.onrender.com](https://mobfix-frontend.onrender.com/) | Responding |
+| Services page | [Browse services](https://mobfix-frontend.onrender.com/services) | Requires SPA deployment fix |
+| Registration page | [Create an account](https://mobfix-frontend.onrender.com/register) | Requires SPA deployment fix |
+| Backend API | [mobfix-backend.onrender.com](https://mobfix-backend.onrender.com/) | Deployed |
+| Service catalog API | [GET /api/services](https://mobfix-backend.onrender.com/api/services) | Responding with live data |
 
-- Frontend: Angular 20, TypeScript, RxJS
-- Backend: Node.js, Express.js
-- Database: MongoDB with Mongoose
-- Authentication: JWT, bcrypt
-- Infrastructure: Render deployment, environment-based configuration
+The service catalog API is currently responding with live data. The direct frontend routes (`/services` and `/register`) currently return Render `404 Not Found` responses in the deployed environment. This is a deployment issue, not an application route that should be treated as unavailable; the Render SPA rewrite and the frontend deployment need to be aligned before those links are production-ready.
 
-## Core Features
+## Product Overview
 
-### Authentication
+The product is built around a straightforward operational model: each repair has an appointment, an owner, a quote, and a visible status history.
 
-- User registration and login
-- Protected API routes
-- Authenticated user profile endpoint
-- Secure password hashing
-- Welcome email notification after successful signup
+### Customer workflow
 
-### Service Discovery
+1. Browse and filter repair services.
+2. Select a repair service and provide device and issue details.
+3. Choose an available appointment slot.
+4. Track the booking from the customer dashboard.
+5. Review and approve a staff-provided quote.
+6. Follow technician status updates through completion.
 
-MobFix organizes repair services by platform:
+### Staff workflow
 
-| Platform | Supported Services |
-|---|---|
-| Android | Samsung, Google Pixel, OnePlus, Xiaomi |
-| iOS | Screen, battery, camera, charging |
-| Tablet | iPad Pro, Air, Mini, Android tablets |
-| Laptop | MacBook, Dell, HP, Lenovo |
-| Website | Bug fixing, optimization, maintenance |
+- Administrators manage services, bookings, quotes, and technician assignments.
+- Technicians see assigned repairs and update operational status.
+- Customers receive a persistent status history instead of an opaque single status value.
 
-Users can:
+## Capabilities
 
-- Search services in real time
-- Filter by platform or category
-- Sort by price, rating, or popularity
-- Review pricing, warranty, and estimated repair time
+### Identity and access
 
-### Booking Management
+- JWT-based authentication
+- bcrypt password hashing
+- Protected customer, administrator, and technician workflows
+- Role-aware frontend navigation and route guards
+- Configurable CORS allowlist
+- Rate limiting on registration and login endpoints
 
-- Create repair bookings
-- View personal bookings
-- Track booking status
-- View booking details
-- Cancel pending bookings
+### Service catalog
 
-### User Experience
+- Searchable repair catalog
+- Platform and category filters
+- Bounded pagination
+- Price, rating, and popularity sorting
+- Service price, warranty, and estimated repair-time metadata
 
-- Responsive layout for laptop and mobile screens
-- Interactive service cards
-- Toast notifications
-- Clean, modern navigation flow
+### Appointment scheduling
 
-## Architecture
+- Five standard two-hour appointment slots
+- Configurable per-slot capacity
+- Availability lookup before booking
+- Server-side capacity enforcement to prevent overbooking
+- Cancelled bookings release slot capacity
+- Future-date and allowed-slot validation
+
+### Quote and repair operations
+
+- Quote minimum and maximum range
+- Staff quote notes
+- Customer quote approval
+- Technician assignment
+- Controlled technician status transitions
+- Booking status history with actor, note, and timestamp
+- Customer-facing repair progress timeline
+
+### Reliability and observability foundations
+
+- `/health` liveness endpoint
+- `/ready` database-readiness endpoint
+- Request IDs in API responses and error logs
+- Structured error response shape
+- Helmet security headers
+- Morgan HTTP request logging
+- Payload-size limits
+
+## System Architecture
 
 ```text
-Angular Frontend
-       |
-       | REST API
-       v
-Node.js / Express Backend
-       |
-       +-- JWT Authentication
-       +-- MongoDB / Mongoose
-       +-- SMTP Welcome Emails
+┌──────────────────────┐
+│ Angular 20 Frontend  │
+│ Customer + Staff UI  │
+└──────────┬───────────┘
+           │ HTTPS / REST
+           ▼
+┌──────────────────────┐
+│ Express API          │
+│ Auth, bookings,      │
+│ quotes, staff ops    │
+└───────┬───────┬──────┘
+        │       │
+        │       └── SMTP provider
+        │
+        ▼
+┌──────────────────────┐
+│ MongoDB + Mongoose   │
+│ Users, services,     │
+│ bookings, reviews    │
+└──────────────────────┘
 ```
 
-## Getting Started
+## Technology Stack
 
-### Backend
+| Layer | Technology |
+|---|---|
+| Client | Angular 20, TypeScript, RxJS |
+| API | Node.js, Express.js |
+| Persistence | MongoDB, Mongoose |
+| Authentication | JWT, bcrypt |
+| Security middleware | Helmet, CORS, express-rate-limit |
+| Email | Nodemailer / SMTP |
+| Testing | Node test runner, Jasmine, Karma, Chrome Headless |
+| Deployment | Render |
+
+## Repository Structure
+
+```text
+.
+├── backend/
+│   ├── config/          Database configuration
+│   ├── middleware/      Authentication and validation middleware
+│   ├── models/          Mongoose domain models
+│   ├── routes/          REST API route modules
+│   ├── services/        Reusable domain services
+│   ├── test/            Backend tests
+│   └── server.js        API entry point
+├── mobfix-frontend/
+│   └── src/app/         Angular standalone components and services
+├── render.yaml          Render service definitions
+└── README.md
+```
+
+## Local Development
+
+### Prerequisites
+
+- Node.js 20 or later
+- npm 10 or later
+- MongoDB 6 or later, local or hosted
+- A configured SMTP provider for welcome emails
+
+### Start the backend
 
 ```powershell
 cd backend
-npm install
+npm ci
 copy .env.example .env
 npm run dev
 ```
 
-### Frontend
+The API listens on `http://localhost:5000` by default.
+
+### Start the frontend
 
 ```powershell
 cd mobfix-frontend
-npm install
+npm ci
 npm start
 ```
 
-## Environment Variables
+The Angular development server listens on `http://localhost:4200` by default.
 
-Configure the backend with these values:
+## Configuration
 
-- `MONGO_URI`
-- `JWT_SECRET`
-- `ADMIN_USERNAME`
-- `ADMIN_PASSWORD`
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_SECURE`
-- `SMTP_USER`
-- `SMTP_PASS`
-- `MAIL_FROM`
-- `FRONTEND_URL`
+Create `backend/.env` locally. Never commit `.env` files or credentials.
 
-## API Summary
+| Variable | Required | Description |
+|---|---:|---|
+| `MONGO_URI` | Yes | MongoDB connection string |
+| `JWT_SECRET` | Yes | Secret used to sign authentication tokens |
+| `FRONTEND_URL` | Yes | Comma-separated allowed frontend origins |
+| `APPOINTMENT_SLOT_CAPACITY` | No | Active bookings allowed per slot; defaults to `2` |
+| `PORT` | No | API port; defaults to `5000` |
+| `NODE_ENV` | No | Runtime environment |
+| `SMTP_HOST` | For email | SMTP hostname |
+| `SMTP_PORT` | For email | SMTP port |
+| `SMTP_SECURE` | For email | Whether SMTP uses TLS |
+| `SMTP_USER` | For email | SMTP username |
+| `SMTP_PASS` | For email | SMTP password |
+| `MAIL_FROM` | For email | Sender address |
+| `ADMIN_USERNAME` | For admin tooling | Administrative seed username |
+| `ADMIN_PASSWORD` | For admin tooling | Administrative seed password |
 
-- `GET /health`
-- `GET /ready`
-- `POST /api/users/register`
-- `POST /api/users/login`
-- `GET /api/users/me`
-- `GET /api/services`
-- `POST /api/bookings`
-- `GET /api/bookings/mine`
-- `POST /api/bookings/:id/quote/approve`
-- `GET /api/bookings/availability?date=YYYY-MM-DD`
-- `GET /api/technician/bookings`
+## API Surface
 
-The service catalog supports bounded pagination and filtering through `page`, `limit`, `search`,
-`platform`, `category`, and `sort` query parameters. Booking records now retain quote ranges,
-technician assignment, and a status history for customer-facing tracking.
-Appointment availability is capacity-aware: cancelled bookings release a slot, while active
-bookings count against the configured `APPOINTMENT_SLOT_CAPACITY` limit.
+### Public and system endpoints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/health` | Liveness check |
+| `GET` | `/ready` | MongoDB readiness check |
+| `GET` | `/api/services` | Service catalog |
+| `GET` | `/api/bookings/availability?date=YYYY-MM-DD` | Appointment capacity |
+
+### Authentication
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/users/register` | Register a customer |
+| `POST` | `/api/users/login` | Authenticate a customer or staff member |
+| `GET` | `/api/users/me` | Read the authenticated user |
+
+### Customer bookings
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/bookings` | Create a repair booking |
+| `GET` | `/api/bookings/mine` | List the customer's bookings |
+| `GET` | `/api/bookings/:id` | Read one owned booking |
+| `PUT` | `/api/bookings/:id` | Edit a pending booking |
+| `PUT` | `/api/bookings/:id/cancel` | Cancel an eligible booking |
+| `POST` | `/api/bookings/:id/quote/approve` | Approve an issued quote |
+
+### Staff operations
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/api/technician/bookings` | List assigned technician bookings |
+| `PUT` | `/api/technician/bookings/:id/status` | Update an assigned repair |
+| `GET` | `/api/admin/technicians` | List technicians |
+| `PUT` | `/api/admin/bookings/:id/assign` | Assign a technician |
+| `PUT` | `/api/admin/bookings/:id/quote` | Issue or update a quote |
+| `PUT` | `/api/admin/bookings/:id/status` | Update a booking as an administrator |
+
+### Booking status lifecycle
+
+```text
+Pending → Quoted → Confirmed → In Progress → Ready for Pickup → Completed
+    └──────────────────────────────→ Cancelled
+```
+
+## Quality Checks
+
+Run backend tests:
+
+```powershell
+cd backend
+npm test
+```
+
+Run Angular tests:
+
+```powershell
+cd mobfix-frontend
+npm test -- --watch=false --browsers=ChromeHeadless
+```
+
+Build the Angular application:
+
+```powershell
+cd mobfix-frontend
+npm run build
+```
+
+The production build currently completes successfully. Angular reports non-blocking bundle and component-style budget warnings that are tracked for a later performance pass.
 
 ## Deployment
 
-The project includes Render deployment support through `render.yaml` and the deployment guide in `RENDER_DEPLOYMENT.md`.
-The Render static service rewrites client-side Angular routes to `index.html`, so direct links such
-as `/services` and `/register` continue to work after refresh.
+Render configuration is defined in [`render.yaml`](./render.yaml):
+
+- The backend runs from `backend/`.
+- The frontend builds from `mobfix-frontend/`.
+- The static frontend rewrites client-side routes to `index.html`.
+- Secrets are configured in Render environment settings rather than committed to Git.
+
+Before production deployment:
+
+1. Configure `MONGO_URI` and `JWT_SECRET`.
+2. Set `FRONTEND_URL` to the exact deployed frontend origin.
+3. Set `API_URL` for the frontend service to the deployed backend origin.
+4. Set `APPOINTMENT_SLOT_CAPACITY` for the desired operational capacity.
+5. Confirm `/health`, `/ready`, and a direct Angular route such as `/services`.
+6. Review Render logs after deployment.
+
+## Security Principles
+
+- Secrets belong in environment configuration, never source control.
+- All booking ownership checks are enforced server-side.
+- Staff endpoints require role-aware authentication.
+- User input is bounded and validated before persistence.
+- CORS should remain an explicit origin allowlist in production.
+- JWT secrets should be long, random, and rotated through deployment configuration.
+- Production errors should expose request IDs, not internal stack traces.
+
+## Roadmap
+
+### Near term
+
+- Persistent audit-log model and staff activity history
+- Transactional notifications for quote and status changes
+- OpenAPI specification and generated API contract tests
+- Broader API integration tests
+- Appointment resource modeling for multiple locations and technician schedules
+- Resolve bundle-size and component-style budget warnings
+
+### Intelligent repair assistance
+
+- Structured diagnosis intake
+- Issue-to-service recommendations
+- Explainable estimated repair ranges
+- Confidence scoring
+- Optional image-assisted device inspection with explicit consent and privacy controls
+
+## Contributing
+
+Keep changes focused and testable. For feature work:
+
+1. Preserve existing API contracts unless a versioned change is documented.
+2. Add or update tests for validation and workflow behavior.
+3. Run backend tests, Angular tests, and the production build.
+4. Do not commit secrets, local environment files, or generated build output.
+5. Document user-visible workflow changes in this README.
+
+## License
+
+This project is currently maintained as a private product-development codebase. Add the applicable license before distributing it outside the owning organization.
