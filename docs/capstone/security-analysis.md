@@ -14,6 +14,20 @@
 | Operations | Liveness and readiness endpoints |
 | Secrets | Environment-based production configuration |
 
+## Dependency security evidence
+
+On 11 October 2026, the production dependency trees were scanned with npm
+audit after the Render vulnerability report:
+
+| Application | Remediation | Production audit result |
+|---|---|---|
+| Backend | Patched transitive Express dependencies and upgraded Nodemailer to 10.1.0 | 0 vulnerabilities |
+| Frontend | Removed the unused browser MongoDB client and updated Angular within the 20.x line | 0 vulnerabilities |
+
+The full development dependency trees may still report findings in test and
+watch tooling. Those packages are not included in the production deployment;
+they remain a maintenance item and are not suppressed with a forced downgrade.
+
 ## Threats and mitigations
 
 | Threat | Risk | Mitigation | Follow-up |
