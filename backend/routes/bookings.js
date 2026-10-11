@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const { stringField } = require('../middleware/validate');
 const { TIME_SLOTS, dayBounds, getAvailability, getSlotCapacity } = require('../services/availability');
+const { recordAudit } = require('../services/audit');
 
 router.get('/availability', async (req, res) => {
   try {
@@ -81,6 +82,14 @@ router.post('/', auth, async (req, res) => {
     });
 
     await booking.populate('serviceId');
+    await recordAudit({
+      actorId: req.userId,
+      action: 'booking.created',
+      resourceType: 'Booking',
+      resourceId: booking._id,
+      requestId: req.requestId,
+      metadata: { status: booking.status, serviceId }
+    });
     res.status(201).json(booking);
   } catch (err) {
     console.error('Booking creation error:', err.message);
@@ -149,6 +158,14 @@ router.put('/:id/cancel', auth, async (req, res) => {
     booking.cancellationReason = req.body.reason || 'Cancelled by user';
     booking.statusHistory.push({ status: 'Cancelled', changedBy: req.userId, note: booking.cancellationReason });
     await booking.save();
+    await recordAudit({
+      actorId: req.userId,
+      action: 'booking.cancelled',
+      resourceType: 'Booking',
+      resourceId: booking._id,
+      requestId: req.requestId,
+      metadata: { reason: booking.cancellationReason }
+    });
     res.json(booking);
   } catch (err) {
     console.error('Error cancelling booking:', err.message);
@@ -170,6 +187,13 @@ router.put('/:id', auth, async (req, res) => {
     const allowed = ['deviceModel', 'issueDescription', 'preferredDate', 'preferredTimeSlot', 'notes'];
     allowed.forEach(k => { if (req.body[k] !== undefined) booking[k] = req.body[k]; });
     await booking.save();
+    await recordAudit({
+      actorId: req.userId,
+      action: 'quote.approved',
+      resourceType: 'Booking',
+      resourceId: booking._id,
+      requestId: req.requestId
+    });
     res.json(booking);
   } catch (err) {
     console.error('Error updating booking:', err.message);

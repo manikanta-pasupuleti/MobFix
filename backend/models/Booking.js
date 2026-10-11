@@ -37,6 +37,13 @@ const BookingSchema = new mongoose.Schema({
   quoteNotes: { type: String, maxlength: 1000 },
   quoteApprovedAt: { type: Date },
   actualCost: { type: Number }, // Final cost (may differ)
+  paymentStatus: {
+    type: String,
+    enum: ['Pending', 'Authorized', 'Paid', 'Failed', 'Refunded'],
+    default: 'Pending'
+  },
+  paymentReference: { type: String, maxlength: 120 },
+  paidAt: { type: Date },
   technicianId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   statusHistory: [{
     status: { type: String, required: true },

@@ -4,6 +4,40 @@ const Service = require('../models/Service');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 
+router.get('/recommendations', async (req, res) => {
+  try {
+    const symptoms = String(req.query.symptoms || '').trim().slice(0, 500);
+    if (symptoms.length < 3) {
+      return res.status(400).json({ message: 'symptoms must contain at least 3 characters' });
+    }
+
+    const terms = symptoms.toLowerCase().split(/[^a-z0-9]+/).filter(term => term.length >= 3);
+    const services = await Service.find({}).limit(100);
+    const recommendations = services.map(service => {
+      const searchable = `${service.serviceName} ${service.description} ${service.category}`.toLowerCase();
+      const matches = terms.filter(term => searchable.includes(term));
+      const score = matches.length + (service.isPopular ? 0.25 : 0) + (Number(service.rating) || 0) / 100;
+      return {
+        service,
+        score: Number(score.toFixed(2)),
+        matchedTerms: [...new Set(matches)]
+      };
+    })
+      .filter(item => item.matchedTerms.length > 0)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 5);
+
+    res.json({
+      symptoms,
+      explanation: 'Matches are based on symptom terms and service catalog metadata; this is not a diagnosis.',
+      data: recommendations
+    });
+  } catch (err) {
+    console.error('Recommendation lookup error:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // List all services (public)
 router.get('/', async (req, res) => {
   try {

@@ -5,6 +5,9 @@ const Booking = require('../models/Booking');
 const Service = require('../models/Service');
 const adminAuth = require('../middleware/adminAuth');
 const mongoose = require('mongoose');
+const AuditEvent = require('../models/AuditEvent');
+const { recordAudit } = require('../services/audit');
+const { canTransition } = require('../services/bookingLifecycle');
 
 // All admin routes require admin role
 router.use(adminAuth);
@@ -44,10 +47,21 @@ router.put('/bookings/:id/status', async (req, res) => {
     }
     const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: 'Booking not found' });
+    if (booking.status !== status && !canTransition(booking.status, status)) {
+      return res.status(409).json({ message: `Cannot change status from ${booking.status} to ${status}` });
+    }
     booking.status = status;
     if (status === 'Completed') booking.completedAt = new Date();
     booking.statusHistory.push({ status, changedBy: req.userId, note: req.body.note || `Status changed to ${status}` });
     await booking.save();
+      await recordAudit({
+        actorId: req.userId,
+        action: 'booking.status_changed',
+        resourceType: 'Booking',
+        resourceId: booking._id,
+        requestId: req.requestId,
+        metadata: { status }
+      });
     await booking.populate('serviceId').populate('userId', '-password').populate('technicianId', 'name email');
     res.json(booking);
   } catch (err) {
@@ -72,6 +86,14 @@ router.put('/bookings/:id/assign', async (req, res) => {
   booking.technicianId = technician._id;
   booking.statusHistory.push({ status: booking.status, changedBy: req.userId, note: `Assigned to ${technician.name}` });
   await booking.save();
+  await recordAudit({
+    actorId: req.userId,
+    action: 'booking.technician_assigned',
+    resourceType: 'Booking',
+    resourceId: booking._id,
+    requestId: req.requestId,
+    metadata: { technicianId: technician._id }
+  });
   await booking.populate('serviceId').populate('userId', '-password').populate('technicianId', 'name email');
   res.json(booking);
 });
@@ -89,8 +111,30 @@ router.put('/bookings/:id/quote', async (req, res) => {
   booking.status = 'Quoted';
   booking.statusHistory.push({ status: 'Quoted', changedBy: req.userId, note: 'Quote sent to customer' });
   await booking.save();
+  await recordAudit({
+    actorId: req.userId,
+    action: 'booking.quote_issued',
+    resourceType: 'Booking',
+    resourceId: booking._id,
+    requestId: req.requestId,
+    metadata: { quoteMin: booking.quoteMin, quoteMax: booking.quoteMax }
+  });
   await booking.populate('serviceId').populate('userId', '-password').populate('technicianId', 'name email');
   res.json(booking);
+});
+
+router.get('/audit-events', async (req, res) => {
+  try {
+    const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 50, 1), 200);
+    const events = await AuditEvent.find({})
+      .populate('actorId', 'name email role')
+      .sort({ createdAt: -1 })
+      .limit(limit);
+    res.json(events);
+  } catch (err) {
+    console.error('Error fetching audit events:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Dashboard stats

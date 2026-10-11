@@ -38,3 +38,5 @@ flowchart TD
 Every accepted transition appends an event to the booking status history. Every
 rejected transition returns a client-safe error and leaves the current state
 unchanged.
+
+Terminal states cannot be reopened, and staff cannot skip lifecycle states.

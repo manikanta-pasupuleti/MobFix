@@ -1,6 +1,8 @@
 const express = require('express');
 const Booking = require('../models/Booking');
 const staffAuth = require('../middleware/staffAuth');
+const { recordAudit } = require('../services/audit');
+const { canTransition } = require('../services/bookingLifecycle');
 
 const router = express.Router();
 router.use(staffAuth);
@@ -29,10 +31,21 @@ router.put('/bookings/:id/status', async (req, res) => {
       : { _id: req.params.id };
     const booking = await Booking.findOne(filter);
     if (!booking) return res.status(404).json({ message: 'Assigned booking not found' });
+    if (booking.status !== req.body.status && !canTransition(booking.status, req.body.status)) {
+      return res.status(409).json({ message: `Cannot change status from ${booking.status} to ${req.body.status}` });
+    }
     booking.status = req.body.status;
     if (booking.status === 'Completed') booking.completedAt = new Date();
     booking.statusHistory.push({ status: booking.status, changedBy: req.userId, note: req.body.note || 'Updated by staff' });
     await booking.save();
+    await recordAudit({
+      actorId: req.userId,
+      action: 'booking.status_changed',
+      resourceType: 'Booking',
+      resourceId: booking._id,
+      requestId: req.requestId,
+      metadata: { status: booking.status }
+    });
     res.json(booking);
   } catch (err) {
     console.error('Error updating technician booking:', err.message);

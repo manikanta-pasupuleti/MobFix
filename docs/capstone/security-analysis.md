@@ -12,6 +12,7 @@
 | Input handling | Shared validation helpers, bounded strings, and payload-size limits |
 | Error handling | Structured errors with request identifiers instead of stack traces |
 | Operations | Liveness and readiness endpoints |
+| Auditability | Persistent audit events for privileged and lifecycle actions |
 | Secrets | Environment-based production configuration |
 
 ## Dependency security evidence

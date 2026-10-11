@@ -70,8 +70,12 @@ The product is built around a straightforward operational model: each repair has
 - Customer quote approval
 - Technician assignment
 - Controlled technician status transitions
+- Server-enforced forward-only booking state transitions
 - Booking status history with actor, note, and timestamp
 - Customer-facing repair progress timeline
+- Independent payment lifecycle fields, separate from repair completion
+- Explainable catalog-based repair recommendations (not medical or technical diagnosis)
+- Persistent audit events for booking, quote, assignment, and status actions
 
 ### Reliability and observability foundations
 
@@ -199,6 +203,7 @@ Create `backend/.env` locally. Never commit `.env` files or credentials.
 | `GET` | `/health` | Liveness check |
 | `GET` | `/ready` | MongoDB readiness check |
 | `GET` | `/api/services` | Service catalog |
+| `GET` | `/api/services/recommendations?symptoms=cracked+screen` | Explainable service suggestions |
 | `GET` | `/api/bookings/availability?date=YYYY-MM-DD` | Appointment capacity |
 
 ### Authentication
