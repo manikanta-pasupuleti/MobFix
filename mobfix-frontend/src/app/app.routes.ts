@@ -11,6 +11,8 @@ import { DashboardComponent } from './dashboard.component';
 import { AuthGuard } from './auth.guard';
 import { AdminGuard } from './admin.guard';
 import { AdminPageComponent } from './admin-page.component';
+import { TechnicianPageComponent } from './technician-page.component';
+import { TechnicianGuard } from './technician.guard';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -21,6 +23,7 @@ export const routes: Routes = [
 	{ path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
 	{ path: 'my-bookings', component: MyBookingsComponent, canActivate: [AuthGuard] },
 	{ path: 'admin', component: AdminPageComponent, canActivate: [AuthGuard, AdminGuard] },
+	{ path: 'technician', component: TechnicianPageComponent, canActivate: [AuthGuard, TechnicianGuard] },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'register', component: RegisterComponent },
 	{ path: '**', redirectTo: '' }

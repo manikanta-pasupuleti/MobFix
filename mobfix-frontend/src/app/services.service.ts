@@ -8,8 +8,8 @@ export class ServicesService {
   private http = inject(HttpClient);
   private api = inject(ApiService);
 
-  list(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.api.baseUrl}/services`);
+  list(): Observable<any> {
+    return this.http.get<any>(`${this.api.baseUrl}/services`);
   }
 
   getById(id: string): Observable<any> {

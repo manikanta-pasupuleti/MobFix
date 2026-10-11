@@ -599,7 +599,8 @@ export class ServicesComponent implements OnInit {
     this.loading = true;
     this.svc.list().subscribe({ 
       next: (res: any) => {
-        this.services = (res && res.length) ? res : this.sampleServices();
+        const services = Array.isArray(res) ? res : res?.data;
+        this.services = services?.length ? services : this.sampleServices();
         this.filterServices();
         this.loading = false;
       },

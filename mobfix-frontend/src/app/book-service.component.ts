@@ -144,19 +144,21 @@ import { BookingsService } from './bookings.service';
         <h3>Schedule Your Appointment</h3>
         <div class="form-group">
           <label>Preferred Date *</label>
-          <input type="date" [(ngModel)]="booking.preferredDate" [min]="minDate" required />
+          <input type="date" [(ngModel)]="booking.preferredDate" (ngModelChange)="onDateChange()" [min]="minDate" required />
+          <small *ngIf="availabilityLoading">Checking appointment capacity...</small>
         </div>
 
         <div class="form-group">
           <label>Preferred Time Slot *</label>
           <select [(ngModel)]="booking.preferredTimeSlot" required>
             <option value="">Select time slot...</option>
-            <option value="9:00 AM - 11:00 AM">9:00 AM - 11:00 AM</option>
-            <option value="11:00 AM - 1:00 PM">11:00 AM - 1:00 PM</option>
-            <option value="1:00 PM - 3:00 PM">1:00 PM - 3:00 PM</option>
-            <option value="3:00 PM - 5:00 PM">3:00 PM - 5:00 PM</option>
-            <option value="5:00 PM - 7:00 PM">5:00 PM - 7:00 PM</option>
+            <option *ngFor="let slot of availableSlots" [value]="slot.slot" [disabled]="slot.isFull">
+              {{slot.slot}} <span *ngIf="slot.isFull">(Full)</span><span *ngIf="!slot.isFull">({{slot.available}} left)</span>
+            </option>
           </select>
+          <small *ngIf="booking.preferredDate && !availabilityLoading && availableSlots.length === 0" class="error-text">
+            No appointment capacity is available for this date.
+          </small>
         </div>
 
         <div class="form-actions">
@@ -532,6 +534,8 @@ export class BookServiceComponent implements OnInit {
   currentStep = 1;
   submitting = false;
   minDate = '';
+  availabilityLoading = false;
+  availableSlots: Array<{ slot: string; available: number; isFull: boolean }> = [];
 
   booking = {
     deviceBrand: '',
@@ -563,6 +567,26 @@ export class BookServiceComponent implements OnInit {
     if (serviceId) {
       this.loadService(serviceId);
     }
+  }
+
+  onDateChange() {
+    this.booking.preferredTimeSlot = '';
+    if (!this.booking.preferredDate) {
+      this.availableSlots = [];
+      return;
+    }
+    this.availabilityLoading = true;
+    this.bookingsService.availability(this.booking.preferredDate).subscribe({
+      next: response => {
+        this.availableSlots = response.slots || [];
+        this.availabilityLoading = false;
+      },
+      error: () => {
+        this.availableSlots = [];
+        this.availabilityLoading = false;
+        alert('We could not check appointment availability. Please try again.');
+      }
+    });
   }
 
   loadService(id: string) {

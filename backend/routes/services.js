@@ -7,8 +7,24 @@ const adminAuth = require('../middleware/adminAuth');
 // List all services (public)
 router.get('/', async (req, res) => {
   try {
-    const services = await Service.find();
-    res.json(services);
+    const page = Math.max(Number.parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 20, 1), 100);
+    const filter = {};
+    if (req.query.platform && req.query.platform !== 'All') filter.platform = req.query.platform;
+    if (req.query.category && req.query.category !== 'All') filter.category = req.query.category;
+    if (req.query.search) filter.$text = { $search: String(req.query.search).slice(0, 100) };
+    const sortMap = {
+      price: { price: 1 },
+      rating: { rating: -1 },
+      popular: { isPopular: -1, reviewCount: -1 },
+      name: { serviceName: 1 }
+    };
+    const sort = sortMap[req.query.sort] || sortMap.popular;
+    const [services, total] = await Promise.all([
+      Service.find(filter).sort(sort).skip((page - 1) * limit).limit(limit),
+      Service.countDocuments(filter)
+    ]);
+    res.json({ data: services, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

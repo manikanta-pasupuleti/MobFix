@@ -24,7 +24,7 @@ const BookingSchema = new mongoose.Schema({
   // Status & Tracking
   status: { 
     type: String, 
-    enum: ['Pending', 'Confirmed', 'In Progress', 'Completed', 'Cancelled'], 
+    enum: ['Pending', 'Quoted', 'Confirmed', 'In Progress', 'Ready for Pickup', 'Completed', 'Cancelled'],
     default: 'Pending' 
   },
   bookingNumber: { type: String, unique: true }, // Auto-generated booking reference
@@ -32,10 +32,21 @@ const BookingSchema = new mongoose.Schema({
   // Additional Info
   notes: { type: String }, // Customer notes
   estimatedCost: { type: Number }, // From service price
+  quoteMin: { type: Number },
+  quoteMax: { type: Number },
+  quoteNotes: { type: String, maxlength: 1000 },
+  quoteApprovedAt: { type: Date },
   actualCost: { type: Number }, // Final cost (may differ)
+  technicianId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  statusHistory: [{
+    status: { type: String, required: true },
+    note: { type: String, maxlength: 500 },
+    changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    changedAt: { type: Date, default: Date.now }
+  }],
   
   // Admin fields
-  technicianNotes: { type: String },
+  technicianNotes: { type: String, maxlength: 2000 },
   completedAt: { type: Date },
   cancelledAt: { type: Date },
   cancellationReason: { type: String }

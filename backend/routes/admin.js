@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Service = require('../models/Service');
 const adminAuth = require('../middleware/adminAuth');
+const mongoose = require('mongoose');
 
 // All admin routes require admin role
 router.use(adminAuth);
@@ -37,21 +38,59 @@ router.get('/bookings', async (req, res) => {
 router.put('/bookings/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
-    const allowed = ['Pending', 'Confirmed', 'In Progress', 'Completed', 'Cancelled'];
+    const allowed = ['Pending', 'Quoted', 'Confirmed', 'In Progress', 'Ready for Pickup', 'Completed', 'Cancelled'];
     if (!allowed.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
-    const booking = await Booking.findByIdAndUpdate(
-      req.params.id,
-      { status, ...(status === 'Completed' ? { completedAt: new Date() } : {}) },
-      { new: true }
-    ).populate('serviceId').populate('userId', '-password');
+    const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: 'Booking not found' });
+    booking.status = status;
+    if (status === 'Completed') booking.completedAt = new Date();
+    booking.statusHistory.push({ status, changedBy: req.userId, note: req.body.note || `Status changed to ${status}` });
+    await booking.save();
+    await booking.populate('serviceId').populate('userId', '-password').populate('technicianId', 'name email');
     res.json(booking);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+router.get('/technicians', async (req, res) => {
+  const technicians = await User.find({ role: 'technician', isActive: true }).select('name email phone');
+  res.json(technicians);
+});
+
+router.put('/bookings/:id/assign', async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id) || !mongoose.isValidObjectId(req.body.technicianId)) {
+    return res.status(400).json({ message: 'Valid booking and technician IDs are required' });
+  }
+  const technician = await User.findOne({ _id: req.body.technicianId, role: 'technician', isActive: true });
+  if (!technician) return res.status(400).json({ message: 'Active technician not found' });
+  const booking = await Booking.findById(req.params.id);
+  if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  booking.technicianId = technician._id;
+  booking.statusHistory.push({ status: booking.status, changedBy: req.userId, note: `Assigned to ${technician.name}` });
+  await booking.save();
+  await booking.populate('serviceId').populate('userId', '-password').populate('technicianId', 'name email');
+  res.json(booking);
+});
+
+router.put('/bookings/:id/quote', async (req, res) => {
+  const { quoteMin, quoteMax, quoteNotes } = req.body;
+  if (!Number.isFinite(Number(quoteMin)) || !Number.isFinite(Number(quoteMax)) || Number(quoteMin) < 0 || Number(quoteMax) < Number(quoteMin)) {
+    return res.status(400).json({ message: 'A valid quote range is required' });
+  }
+  const booking = await Booking.findById(req.params.id);
+  if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  booking.quoteMin = Number(quoteMin);
+  booking.quoteMax = Number(quoteMax);
+  booking.quoteNotes = typeof quoteNotes === 'string' ? quoteNotes.trim().slice(0, 1000) : undefined;
+  booking.status = 'Quoted';
+  booking.statusHistory.push({ status: 'Quoted', changedBy: req.userId, note: 'Quote sent to customer' });
+  await booking.save();
+  await booking.populate('serviceId').populate('userId', '-password').populate('technicianId', 'name email');
+  res.json(booking);
 });
 
 // Dashboard stats

@@ -23,7 +23,7 @@ router.post('/', auth, async (req, res) => {
     const { serviceId, rating, comment } = req.body;
 
     // Validate required fields
-    if (!serviceId || !rating || !comment) {
+    if (!serviceId || !comment || !Number.isInteger(Number(rating)) || Number(rating) < 1 || Number(rating) > 5 || comment.trim().length < 3 || comment.trim().length > 1000) {
       return res.status(400).json({ message: 'Service, rating, and comment are required' });
     }
 
@@ -79,8 +79,18 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this review' });
     }
 
-    if (rating) review.rating = Number(rating);
-    if (comment) review.comment = comment.trim();
+    if (rating !== undefined) {
+      if (!Number.isInteger(Number(rating)) || Number(rating) < 1 || Number(rating) > 5) {
+        return res.status(400).json({ message: 'Rating must be an integer from 1 to 5' });
+      }
+      review.rating = Number(rating);
+    }
+    if (comment !== undefined) {
+      if (typeof comment !== 'string' || comment.trim().length < 3 || comment.trim().length > 1000) {
+        return res.status(400).json({ message: 'Comment must be between 3 and 1000 characters' });
+      }
+      review.comment = comment.trim();
+    }
 
     await review.save();
 

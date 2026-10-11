@@ -202,6 +202,24 @@ import { ToastService } from './toast.service';
         <div class="modal-section pricing">
           <h4>Pricing</h4>
           <p><strong>Estimated Cost:</strong> \${{ selectedBooking.estimatedCost }}</p>
+          <div *ngIf="selectedBooking.quoteMin != null" class="quote-box">
+            <p><strong>Repair quote:</strong> \${{ selectedBooking.quoteMin }} - \${{ selectedBooking.quoteMax }}</p>
+            <p *ngIf="selectedBooking.quoteNotes">{{ selectedBooking.quoteNotes }}</p>
+            <button class="btn primary" *ngIf="selectedBooking.status === 'Quoted'" (click)="approveQuote(selectedBooking)">
+              Approve quote
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-section" *ngIf="selectedBooking.statusHistory?.length">
+          <h4>Repair progress</h4>
+          <ol class="status-timeline">
+            <li *ngFor="let event of selectedBooking.statusHistory">
+              <strong>{{ event.status }}</strong>
+              <span>{{ formatDateTime(event.changedAt) }}</span>
+              <small *ngIf="event.note">{{ event.note }}</small>
+            </li>
+          </ol>
         </div>
         
         <div class="modal-actions">
@@ -223,6 +241,7 @@ export class MyBookingsComponent implements OnInit {
   loading = true;
   cancelling: string | null = null;
   selectedBooking: any = null;
+  approvingQuote = false;
   
   private cd = inject(ChangeDetectorRef);
   
@@ -304,6 +323,32 @@ export class MyBookingsComponent implements OnInit {
   
   closeModal() {
     this.selectedBooking = null;
+  }
+
+  approveQuote(booking: any) {
+    this.approvingQuote = true;
+    this.bs.approveQuote(booking._id).subscribe({
+      next: updated => {
+        this.replaceBooking(updated);
+        this.selectedBooking = updated;
+        this.approvingQuote = false;
+        this.toast.success('Quote approved. Your repair is now confirmed.');
+      },
+      error: err => {
+        this.approvingQuote = false;
+        this.toast.error(err.error?.message || 'Unable to approve the quote.');
+      }
+    });
+  }
+
+  private replaceBooking(updated: any) {
+    const index = this.bookings.findIndex(booking => booking._id === updated._id);
+    if (index >= 0) this.bookings[index] = updated;
+    this.filterBookings(this.filter);
+  }
+
+  formatDateTime(value: string): string {
+    return value ? new Date(value).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : '';
   }
 
   cancelBooking(b: any) {

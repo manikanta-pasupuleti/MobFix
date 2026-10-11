@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BookingsService } from './bookings.service';
+import { ToastService } from './toast.service';
 
 @Component({
   selector: 'mf-booking-confirmation',
@@ -78,6 +79,26 @@ import { BookingsService } from './bookings.service';
               <strong>Status</strong>
               <span class="status-badge status-pending">{{booking.status}}</span>
             </div>
+          </div>
+
+          <div class="quote-panel" *ngIf="booking.quoteMin != null">
+            <h3>Repair quote</h3>
+            <p class="quote-range">\${{booking.quoteMin}} - \${{booking.quoteMax}}</p>
+            <p *ngIf="booking.quoteNotes">{{booking.quoteNotes}}</p>
+            <button class="btn primary" *ngIf="booking.status === 'Quoted'" (click)="approveQuote()" [disabled]="approvingQuote">
+              {{ approvingQuote ? 'Approving...' : 'Approve quote' }}
+            </button>
+          </div>
+
+          <div class="timeline-panel" *ngIf="booking.statusHistory?.length">
+            <h3>Repair progress</h3>
+            <ol class="status-timeline">
+              <li *ngFor="let event of booking.statusHistory">
+                <strong>{{event.status}}</strong>
+                <span>{{formatDateTime(event.changedAt)}}</span>
+                <small *ngIf="event.note">{{event.note}}</small>
+              </li>
+            </ol>
           </div>
         </div>
 
@@ -163,6 +184,30 @@ import { BookingsService } from './bookings.service';
       text-align: left;
       animation: slideUp 0.5s ease-out 0.2s both;
     }
+
+    .quote-panel, .timeline-panel {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border: 1px solid #d9e5e1;
+      border-radius: 10px;
+      background: #f7fbf9;
+    }
+
+    .quote-range {
+      color: #198754;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .status-timeline {
+      display: grid;
+      gap: .9rem;
+      padding-left: 1.25rem;
+      margin-bottom: 0;
+    }
+
+    .status-timeline li { display: grid; gap: .15rem; }
+    .status-timeline span, .status-timeline small { color: #6c757d; }
 
     @keyframes slideUp {
       from {
@@ -345,11 +390,13 @@ import { BookingsService } from './bookings.service';
 export class BookingConfirmationComponent implements OnInit {
   booking: any = null;
   loading = true;
+  approvingQuote = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private bookingsService: BookingsService
+    private bookingsService: BookingsService,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -383,5 +430,25 @@ export class BookingConfirmationComponent implements OnInit {
       month: 'long',
       day: 'numeric'
     });
+  }
+
+  approveQuote() {
+    if (!this.booking) return;
+    this.approvingQuote = true;
+    this.bookingsService.approveQuote(this.booking._id).subscribe({
+      next: booking => {
+        this.booking = booking;
+        this.approvingQuote = false;
+        this.toast.success('Quote approved. Your repair is now confirmed.');
+      },
+      error: err => {
+        this.approvingQuote = false;
+        this.toast.error(err.error?.message || 'Unable to approve the quote.');
+      }
+    });
+  }
+
+  formatDateTime(value: string): string {
+    return value ? new Date(value).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : '';
   }
 }

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const { validateRegistration, validateLogin } = require('../middleware/validate');
 
 function buildEmailTransporter() {
   const host = process.env.SMTP_HOST || process.env.MAIL_HOST;
@@ -55,7 +56,7 @@ async function sendWelcomeEmail(user) {
 }
 
 // Register
-router.post('/register', async (req, res) => {
+router.post('/register', validateRegistration, async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
     if (!name || !email || !password) {
@@ -80,7 +81,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: 'Missing email or password' });

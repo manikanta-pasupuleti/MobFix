@@ -27,4 +27,7 @@ const ServiceSchema = new mongoose.Schema({
   difficulty: { type: String, enum: ['Easy', 'Medium', 'Complex'], default: 'Medium' }
 }, { timestamps: true });
 
+ServiceSchema.index({ serviceName: 'text', description: 'text' });
+ServiceSchema.index({ platform: 1, category: 1, isPopular: -1 });
+
 module.exports = mongoose.model('Service', ServiceSchema);

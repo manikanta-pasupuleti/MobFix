@@ -84,6 +84,8 @@ import { AdminService } from './admin.service';
                   <th>User</th>
                   <th>Service</th>
                   <th>Status</th>
+                  <th>Technician</th>
+                  <th>Actions</th>
                   <th>Date</th>
                 </tr>
               </thead>
@@ -94,6 +96,12 @@ import { AdminService } from './admin.service';
                   <td>{{ booking.serviceId?.serviceName || '-' }}</td>
                   <td>
                     <span class="status" [class]="statusClass(booking.status)">{{ booking.status || '-' }}</span>
+                  </td>
+                  <td>{{ booking.technicianId?.name || 'Unassigned' }}</td>
+                  <td>
+                    <select [value]="booking.status" (change)="changeStatus(booking, $any($event.target).value)" aria-label="Update booking status">
+                      <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                    </select>
                   </td>
                   <td>{{ formatDate(booking.createdAt) }}</td>
                 </tr>
@@ -308,6 +316,7 @@ export class AdminPageComponent implements OnInit {
   stats: any = {};
   customers: any[] = [];
   bookings: any[] = [];
+  statuses = ['Pending', 'Quoted', 'Confirmed', 'In Progress', 'Ready for Pickup', 'Completed', 'Cancelled'];
 
   ngOnInit(): void {
     this.loadAdminData();
@@ -345,5 +354,19 @@ export class AdminPageComponent implements OnInit {
   statusClass(status: string): string {
     if (!status) return '';
     return `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+  }
+
+  changeStatus(booking: any, status: string): void {
+    if (!status || status === booking.status) return;
+    this.adminService.updateStatus(booking._id, status).subscribe({
+      next: updated => {
+        const index = this.bookings.findIndex(item => item._id === updated._id);
+        if (index >= 0) this.bookings[index] = updated;
+      },
+      error: err => {
+        this.error = err?.error?.message || 'Unable to update booking status.';
+        this.loadAdminData();
+      }
+    });
   }
 }

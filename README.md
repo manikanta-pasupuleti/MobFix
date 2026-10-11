@@ -113,13 +113,26 @@ Configure the backend with these values:
 
 ## API Summary
 
+- `GET /health`
+- `GET /ready`
 - `POST /api/users/register`
 - `POST /api/users/login`
 - `GET /api/users/me`
 - `GET /api/services`
 - `POST /api/bookings`
 - `GET /api/bookings/mine`
+- `POST /api/bookings/:id/quote/approve`
+- `GET /api/bookings/availability?date=YYYY-MM-DD`
+- `GET /api/technician/bookings`
+
+The service catalog supports bounded pagination and filtering through `page`, `limit`, `search`,
+`platform`, `category`, and `sort` query parameters. Booking records now retain quote ranges,
+technician assignment, and a status history for customer-facing tracking.
+Appointment availability is capacity-aware: cancelled bookings release a slot, while active
+bookings count against the configured `APPOINTMENT_SLOT_CAPACITY` limit.
 
 ## Deployment
 
 The project includes Render deployment support through `render.yaml` and the deployment guide in `RENDER_DEPLOYMENT.md`.
+The Render static service rewrites client-side Angular routes to `index.html`, so direct links such
+as `/services` and `/register` continue to work after refresh.

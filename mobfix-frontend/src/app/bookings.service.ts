@@ -12,6 +12,10 @@ export class BookingsService {
     return this.http.post(`${this.api.baseUrl}/bookings`, payload);
   }
 
+  availability(date: string): Observable<any> {
+    return this.http.get(`${this.api.baseUrl}/bookings/availability`, { params: { date } });
+  }
+
   myBookings(): Observable<any[]> {
     return this.http.get<any[]>(`${this.api.baseUrl}/bookings/mine`);
   }
@@ -26,5 +30,9 @@ export class BookingsService {
 
   update(id: string, payload: any): Observable<any> {
     return this.http.put(`${this.api.baseUrl}/bookings/${id}`, payload);
+  }
+
+  approveQuote(id: string): Observable<any> {
+    return this.http.post(`${this.api.baseUrl}/bookings/${id}/quote/approve`, {});
   }
 }
