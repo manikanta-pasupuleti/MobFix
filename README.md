@@ -293,6 +293,20 @@ Before production deployment:
 
 ## Roadmap
 
+## Capstone Documentation
+
+The capstone evidence package is maintained under [`docs/capstone/`](./docs/capstone/):
+
+- [Software requirements specification](./docs/capstone/requirements.md)
+- [Database design](./docs/capstone/database-design.md)
+- [Booking state transitions](./docs/capstone/state-transitions.md)
+- [Test evidence](./docs/capstone/test-evidence.md)
+- [Performance evaluation](./docs/capstone/performance-evaluation.md)
+- [Security analysis](./docs/capstone/security-analysis.md)
+- [User feedback plan](./docs/capstone/user-feedback.md)
+- [Comparison with existing approaches](./docs/capstone/comparison.md)
+- [Architecture diagrams](./.github/modernize/assessment/engines/facts/architecture-diagram.md)
+
 ### Near term
 
 - Persistent audit-log model and staff activity history
