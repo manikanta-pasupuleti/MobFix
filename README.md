@@ -234,7 +234,9 @@ Create `backend/.env` locally. Never commit `.env` files or credentials.
 | `GET` | `/api/admin/technicians` | List technicians |
 | `PUT` | `/api/admin/bookings/:id/assign` | Assign a technician |
 | `PUT` | `/api/admin/bookings/:id/quote` | Issue or update a quote |
+| `PUT` | `/api/admin/bookings/:id/payment` | Record payment state separately from repair status |
 | `PUT` | `/api/admin/bookings/:id/status` | Update a booking as an administrator |
+| `GET` | `/api/admin/audit-events` | Review lifecycle and staff audit events |
 
 ### Booking status lifecycle
 

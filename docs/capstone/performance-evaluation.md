@@ -36,3 +36,15 @@ each release candidate.
 
 No benchmark result is claimed here until the evaluation is run against a
 declared environment. The targets above are the capstone acceptance criteria.
+
+## Initial live smoke measurement
+
+On 2026-10-11, twenty sequential requests were sent from the development
+workstation to the deployed catalog endpoint
+`https://mobfix-backend.onrender.com/api/services`. All twenty requests
+succeeded. Observed latency was 536 ms at p50, 691 ms at p95, with a 509 ms
+minimum and 1,216 ms maximum.
+
+This is an initial availability and latency smoke measurement, not a load test:
+it used one client, a sequential request mix, and an unknown production
+dataset size. The concurrency matrix above remains pending.

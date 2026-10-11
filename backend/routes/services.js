@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Service = require('../models/Service');
-const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 
 router.get('/recommendations', async (req, res) => {

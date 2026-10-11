@@ -123,6 +123,31 @@ router.put('/bookings/:id/quote', async (req, res) => {
   res.json(booking);
 });
 
+router.put('/bookings/:id/payment', async (req, res) => {
+  const allowed = ['Pending', 'Authorized', 'Paid', 'Failed', 'Refunded'];
+  const { paymentStatus, paymentReference } = req.body;
+  if (!allowed.includes(paymentStatus)) {
+    return res.status(400).json({ message: 'Invalid payment status' });
+  }
+  const booking = await Booking.findById(req.params.id);
+  if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  booking.paymentStatus = paymentStatus;
+  booking.paymentReference = typeof paymentReference === 'string'
+    ? paymentReference.trim().slice(0, 120)
+    : undefined;
+  booking.paidAt = paymentStatus === 'Paid' ? new Date() : undefined;
+  await booking.save();
+  await recordAudit({
+    actorId: req.userId,
+    action: 'booking.payment_changed',
+    resourceType: 'Booking',
+    resourceId: booking._id,
+    requestId: req.requestId,
+    metadata: { paymentStatus }
+  });
+  res.json(booking);
+});
+
 router.get('/audit-events', async (req, res) => {
   try {
     const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 50, 1), 200);
