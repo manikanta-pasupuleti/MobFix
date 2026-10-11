@@ -42,9 +42,9 @@ services:
     branch: main
     buildCommand: >-
       cd mobfix-frontend && npm ci && npx ng build --configuration production &&
-      echo "window.__env = window.__env || {}; window.__env.API_URL = '${API_URL}';" > dist/mobfix-frontend/assets/env.js &&
+      echo "window.__env = window.__env || {}; window.__env.API_URL = '${API_URL}';" > dist/mobfix-frontend/browser/assets/env.js &&
       echo "env.js created with API_URL=${API_URL}"
-    staticPublishPath: dist/mobfix-frontend
+    staticPublishPath: dist/mobfix-frontend/browser
     routes:
       - type: rewrite
         source: /*
